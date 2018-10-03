@@ -1,0 +1,5 @@
+CMAKE_MINIMUM_REQUIRED(VERSION 3.0)
+PROJECT(P1)
+SET(CMAKE_CXX_FLAGS "-g")
+add_executable(cliente cliente.c)
+add_executable(servidor servidor.c)
