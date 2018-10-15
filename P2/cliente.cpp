@@ -8,6 +8,7 @@
 #include <unistd.h>
 #include <time.h>
 #include <arpa/inet.h>
+void partida(int const & sd);
 int main(int argc, char **argv){
    int sd;
    struct sockaddr_in sockname;
@@ -26,14 +27,21 @@ int main(int argc, char **argv){
 
    len_sockname = sizeof(sockname);
 
-	if (connect(sd, (struct sockaddr *)&sockname, len_sockname) == -1)
-	{
+	if (connect(sd, (struct sockaddr *)&sockname, len_sockname) == -1){
 		perror ("Error de conexión");
 		exit(1);
 	}
 
    int opcion;
-   std::string cadena, usuario, passwd, registro;
+   std::string cadena, usuario, passwd, registro, bienvenida;
+   recv(sd, bienvenida.c_str(), sizeof(bienvenida), 0);
+   if(bienvenida=="Demasiados clientes conectados\n"){
+      std::cout << bienvenida << '\n';
+      return -1;
+   }
+   else{
+      std::cout << bienvenida << '\n';//mensaje conexión correcta
+   }
 
    while(buffer=="error"){
       std::cout << "Introduzca que quiere hacer" << '\n';
@@ -97,7 +105,7 @@ int main(int argc, char **argv){
       std::cin >> opcion2;
 
       if(opcion2==1){
-         //iniciar partida
+         partida(sd);
       }
       else{
          close(sd);
@@ -105,4 +113,12 @@ int main(int argc, char **argv){
          return 0;
       }
    }
+}
+void partida(int const & sd){
+   std::string mensaje="JUGAR", confirmacion;
+   send(sd, mensaje.c_str(), sizeof(mensaje), 0);
+   std::cout << "Espere....." << '\n';
+   recv(sd, confirmacion.c_str(), sizeof(confirmacion), 0)
+
+
 }
