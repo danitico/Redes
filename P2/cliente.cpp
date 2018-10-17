@@ -39,8 +39,8 @@ int main(int argc, char **argv){
    std::string cadena, usuario, passwd, registro, bienvenida;
    recv(sd, buffer, 100, 0);
 
-   if(buffer=="Demasiados clientes conectados\n"){
-      std::cout << buffer;
+   if(strcmp("Demasiados clientes conectados\0", buffer)==0){
+      std::cout << buffer << std::endl;
       return -1;
    }
    else{
@@ -51,90 +51,98 @@ int main(int argc, char **argv){
    char b[50];
    bzero(buffer,sizeof(buffer));
    bzero(buffer1, sizeof(buffer1));
-   bzero(a,sizeof(a));
-   bzero(b, sizeof(b));
-   strcpy(a, "USUARIO ");
-   strcpy(b, "PASSWORD ");
+   // bzero(a,sizeof(a));
+   // bzero(b, sizeof(b));
+   // strcpy(a, "USUARIO ");
+   // strcpy(b, "PASSWORD ");
 
    while(1){
-      std::cout << "Introduzca que quiere hacer" << '\n';
-      std::cout << "1. Logearse" << '\n';
-      std::cout << "2. Registrase" << '\n';
-      std::cin >> opcion;
-
-      if(opcion!=0){
-         switch (opcion) {
-            case 1:
-               std::cout << "Introduzca el usuario" << '\n';
-               std::cin>>buffer1;
-               strcat(a, buffer1);
-               std::cout << a << '\n';
-               // buffer1 = "USUARIO " + buffer1;
-               send(sd, a, sizeof(a), 0);
-               recv(sd, buffer, sizeof(buffer), 0);
-
-               if(buffer=="error"){
-                  std::cout << "no existe" << '\n';
-                  break;
-               }
-
-               strcpy(buffer1, "");
-               std::cout << "Introduzca passwd" << '\n';
-               std::cin >> buffer1;
-
-               strcat(b, buffer1);
-               std::cout << b << '\n';
-               strcpy(buffer, "");
-               send(sd, b, sizeof(b), 0);
-               recv(sd, buffer, sizeof(buffer), 0);
-               if(buffer=="error"){
-                  std::cout << "contraseña equivocada" << '\n';
-                  break;
-               }
-               break;
-            case 2:
-               // std::cout << "Introduzca el usuario" << '\n';
-               // std::cin>>usuario;
-               // std::cout << "Introduzca passwd" << '\n';
-               // std::cin >> passwd;
-               //
-               // registro="REGISTRO -u " + usuario + " -p " + passwd;
-               // send(sd, registro.c_str(), sizeof(registro), 0);
-               // cadena="";
-               // recv(sd, cadena.c_str(), sizeof(cadena), 0);
-               // if(cadena=="error"){
-               //    std::cout << "El usuario existe" << '\n';
-               // }
-               break;
-
-            default:
-               std::cout << "opcion equivocada" << '\n';
-            break;
-         }
-      }
-      else{
-         close(sd);
-         std::cout << "salir" << '\n';
-         return 0;
-      }
+      fgets(buffer,sizeof(buffer),stdin);
+      send(sd, buffer, sizeof(buffer), 0);
+      recv(sd, buffer1, sizeof(buffer1), 0);
+      std::cout << buffer1 << '\n';
+      bzero(buffer,sizeof(buffer));
+      bzero(buffer1, sizeof(buffer1));
    }
+   // while(1){
+   //    std::cout << "Introduzca que quiere hacer" << '\n';
+   //    std::cout << "1. Logearse" << '\n';
+   //    std::cout << "2. Registrase" << '\n';
+   //    std::cin >> opcion;
+   //
+   //    if(opcion!=0){
+   //       switch (opcion) {
+   //          case 1:
+   //             std::cout << "Introduzca el usuario" << '\n';
+   //             std::cin>>buffer1;
+   //             strcat(a, buffer1);
+   //             std::cout << a << '\n';
+   //             // buffer1 = "USUARIO " + buffer1;
+   //             send(sd, a, sizeof(a), 0);
+   //             recv(sd, buffer, sizeof(buffer), 0);
+   //
+   //             if(buffer=="error"){
+   //                std::cout << "no existe" << '\n';
+   //                break;
+   //             }
+   //
+   //             strcpy(buffer1, "");
+   //             std::cout << "Introduzca passwd" << '\n';
+   //             std::cin >> buffer1;
+   //
+   //             strcat(b, buffer1);
+   //             std::cout << b << '\n';
+   //             strcpy(buffer, "");
+   //             send(sd, b, sizeof(b), 0);
+   //             recv(sd, buffer, sizeof(buffer), 0);
+   //             if(buffer=="error"){
+   //                std::cout << "contraseña equivocada" << '\n';
+   //                break;
+   //             }
+   //             break;
+   //          case 2:
+   //             // std::cout << "Introduzca el usuario" << '\n';
+   //             // std::cin>>usuario;
+   //             // std::cout << "Introduzca passwd" << '\n';
+   //             // std::cin >> passwd;
+   //             //
+   //             // registro="REGISTRO -u " + usuario + " -p " + passwd;
+   //             // send(sd, registro.c_str(), sizeof(registro), 0);
+   //             // cadena="";
+   //             // recv(sd, cadena.c_str(), sizeof(cadena), 0);
+   //             // if(cadena=="error"){
+   //             //    std::cout << "El usuario existe" << '\n';
+   //             // }
+   //             break;
+   //
+   //          default:
+   //             std::cout << "opcion equivocada" << '\n';
+   //          break;
+   //       }
+   //    }
+   //    else{
+   //       close(sd);
+   //       std::cout << "salir" << '\n';
+   //       return 0;
+   //    }
+   // }
 
-   if(cadena=="OK"){
-      int opcion2=0;
-      std::cout << "Introduzca que quiere hacer" << '\n';
-      std::cout << "1. Iniciar partido" << '\n';
-      std::cout << "2. salir" << '\n';
-      std::cin >> opcion2;
-
-      if(opcion2==1){
-         // partida(sd);
-      }
-      else{
-         close(sd);
-         std::cout << "salir" << '\n';
-         return 0;
-      }
-   }
+   // if(cadena=="OK"){
+   //    int opcion2=0;
+   //    std::cout << "Introduzca que quiere hacer" << '\n';
+   //    std::cout << "1. Iniciar partido" << '\n';
+   //    std::cout << "2. salir" << '\n';
+   //    std::cin >> opcion2;
+   //
+   //    if(opcion2==1){
+   //       // partida(sd);
+   //    }
+   //    else{
+   //       close(sd);
+   //       std::cout << "salir" << '\n';
+   //       return 0;
+   //    }
+   // }
 }
 // void partida(int const & sd){
 //    std::string mensaje="JUGAR", confirmacion;

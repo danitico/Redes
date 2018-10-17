@@ -9,12 +9,14 @@
 #include <unistd.h>
 #include <ctime>
 #include <arpa/inet.h>
-#define MAX_CLIENTS 20
+#include <fstream>
+#define MAX_CLIENTS 2
 void salirCliente(int socket, fd_set * readfds, int * numClientes, int arrayClientes[]);
 int main(){
 	/*----------------------------------------------------
 		Descriptor del socket y buffer de datos
 	-----------------------------------------------------*/
+   std::fstream file;
    int sd, new_sd;
    struct sockaddr_in sockname, from;
    char buffer[100];
@@ -132,13 +134,48 @@ int main(){
                         salirCliente(i,&readfds,&numClientes,arrayClientes);
                      }
                      else{
-                        if(strstr(buffer, "USUARIO")!=NULL){
-                           std::cout << "cat" << '\n';
-                           send(i,buffer,strlen(buffer),0);
-                        }
-                        else if(strstr(buffer, "PASSWORD")!=NULL){
-                           std::cout << "meow" << '\n';
-                           send(i,buffer,strlen(buffer),0);
+                        // if(strstr(buffer, "USUARIO")!=NULL){
+                        //    std::cout << "cat" << '\n';
+                        //    send(i,buffer,strlen(buffer),0);
+                        // }
+                        // else if(strstr(buffer, "PASSWORD")!=NULL){
+                        //    std::cout << "meow" << '\n';
+                        //    send(i,buffer,strlen(buffer),0);
+                        // }
+                        if(strstr(buffer, "REGISTRO")!=NULL){
+                           bool anadir=true;
+                           file.open("USUARIOS.txt", std::fstream::in);
+                           char *dummie, *dummie1;
+                           char user[20], passwd[20];
+                           bzero(user, sizeof(user));
+                           bzero(passwd, sizeof(passwd));
+                           dummie=strstr(buffer, " -p");
+                           dummie1=strstr(buffer, "-p");
+                           int lenghtbuffer=strlen(buffer)-1, lenghtdummie=strlen(dummie)-1, lenghtdummie1=strlen(dummie1)-1;
+                           strncpy(user, buffer+12, lenghtbuffer-lenghtdummie-12);
+                           strncpy(passwd, dummie1+3, lenghtbuffer-lenghtdummie1-3);
+
+                           std::string search;
+
+                           while(getline(file,search)){
+                              if(strstr(search.c_str(), user)!=NULL){
+                                 std::cout << "hola" << '\n';
+                                 anadir=false;
+                                 bzero(buffer,sizeof(buffer));
+                                 strcpy(buffer,"-Err Ya existe ese usuario\0");
+                                 send(i,buffer,strlen(buffer),0);
+                                 break;
+                              }
+                           }
+                           file.close();
+                           file.open("USUARIOS.txt", std::fstream::app);
+                           if(anadir){
+                              file << user << " " << passwd;
+                              bzero(buffer,sizeof(buffer));
+                              strcpy(buffer,"+Ok Usuario Registrado\0");
+                              send(i,buffer,strlen(buffer),0);
+                           }
+                           file.close();
                         }
 
                         //AQUI VA EL CODIGO
