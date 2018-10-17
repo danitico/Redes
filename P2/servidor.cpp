@@ -1,20 +1,23 @@
-#include <stdio.h>
+#include <iostream>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cstdlib>
+#include <cstring>
+#include <string>
 #include <unistd.h>
-#include <time.h>
+#include <ctime>
 #include <arpa/inet.h>
+#define MAX_CLIENTS 20
+void salirCliente(int socket, fd_set * readfds, int * numClientes, int arrayClientes[]);
 int main(){
 	/*----------------------------------------------------
 		Descriptor del socket y buffer de datos
 	-----------------------------------------------------*/
    int sd, new_sd;
    struct sockaddr_in sockname, from;
-   std::string buffer;
+   char buffer[100];
    socklen_t from_len;
    fd_set readfds, auxfds;
    int salida;
@@ -91,13 +94,14 @@ int main(){
                      if(numClientes < MAX_CLIENTS){
                         arrayClientes[numClientes] = new_sd;
                         numClientes++;
+                        bzero(buffer,sizeof(buffer));
                         FD_SET(new_sd,&readfds);
-                        strcpy(buffer, "Bienvenido al Buscaminas\n");
+                        strcpy(buffer, "Bienvenidos\0");
                         send(new_sd,buffer,strlen(buffer),0);
                      }
                      else{
                         bzero(buffer,sizeof(buffer));
-                        strcpy(buffer,"Demasiados clientes conectados\n");
+                        strcpy(buffer,"Demasiados clientes conectados\0");
                         send(new_sd,buffer,strlen(buffer),0);
                         close(new_sd);
                      }
@@ -122,11 +126,21 @@ int main(){
                else{
                   bzero(buffer,sizeof(buffer));
                   recibidos = recv(i,buffer,sizeof(buffer),0);
+                  std::cout << buffer << '\n';
                   if(recibidos>0){
                      if(strcmp(buffer,"SALIR\n") == 0){
                         salirCliente(i,&readfds,&numClientes,arrayClientes);
                      }
                      else{
+                        if(strstr(buffer, "USUARIO")!=NULL){
+                           std::cout << "cat" << '\n';
+                           send(i,buffer,strlen(buffer),0);
+                        }
+                        else if(strstr(buffer, "PASSWORD")!=NULL){
+                           std::cout << "meow" << '\n';
+                           send(i,buffer,strlen(buffer),0);
+                        }
+
                         //AQUI VA EL CODIGO
                         // sprintf(identificador,"%d: %s",i,buffer);
                         // bzero(buffer,sizeof(buffer));
@@ -139,7 +153,7 @@ int main(){
                      }
                   }
                   //Si el cliente introdujo ctrl+c
-                  if(recibidos== 0){
+                  if(recibidos==0){
                      printf("El socket %d, ha introducido ctrl+c\n", i);
                      //Eliminar ese socket
                      salirCliente(i,&readfds,&numClientes,arrayClientes);
@@ -151,4 +165,28 @@ int main(){
    }
 	close(sd);
 	return 0;
+}
+void salirCliente(int socket, fd_set * readfds, int * numClientes, int arrayClientes[]){
+
+    char buffer[250];
+    int j;
+
+    close(socket);
+    FD_CLR(socket,readfds);
+
+    //Re-estructurar el array de clientes
+    for (j = 0; j < (*numClientes) - 1; j++)
+        if (arrayClientes[j] == socket)
+            break;
+    for (; j < (*numClientes) - 1; j++)
+        (arrayClientes[j] = arrayClientes[j+1]);
+
+    (*numClientes)--;
+
+    bzero(buffer,sizeof(buffer));
+    sprintf(buffer,"Desconexión del cliente: %d\n",socket);
+
+    for(j=0; j<(*numClientes); j++)
+        if(arrayClientes[j] != socket)
+            send(arrayClientes[j],buffer,strlen(buffer),0);
 }
