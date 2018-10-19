@@ -214,22 +214,22 @@ int main(){
                               bool authentication=false;
 
                               strncpy(contrasena, buffer+9, strlen(buffer)-10);
-                              // std::cout << "Contrasena introducida" << contrasena << '\n';
+
                               file.open("USUARIOS.txt", std::fstream::in);
                               while(std::getline(file,search)){
                                  user_to_search=search.substr(0, strlen(usuario));
                                  if(strcmp(user_to_search.c_str(), usuario)==0){
                                     passwd_to_search=search.substr(strlen(usuario)+1, strlen(search.c_str())-strlen(usuario)-1);
-                                    // std::cout << "Contrasena en fichero: " << passwd_to_search << std::endl;
                                     if(strcmp(passwd_to_search.c_str(), contrasena)==0){
                                        std::cout << "Contrasena correcta" << '\n';
                                     }
                                     else{
-                                       std::cout << "Contrasena incorrecta" << '\n';
+                                       bzero(buffer,sizeof(buffer));
+                                       strcpy(buffer,"-Err Contraseña equivocada\0");
+                                       send(i,buffer,strlen(buffer),0);
+                                       file.close();
+                                       break;
                                     }
-                                    // send(i,buffer,strlen(buffer),0);
-                                    // file.close();
-                                    break;
                                  }
                               }
                            }
