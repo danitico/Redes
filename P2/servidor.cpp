@@ -1,24 +1,29 @@
-#include <stdio.h>
+#include <iostream>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cstdlib>
+#include <cstring>
+#include <string>
 #include <unistd.h>
-#include <time.h>
+#include <ctime>
 #include <arpa/inet.h>
+#include <fstream>
+#define MAX_CLIENTS 2
+void salirCliente(int socket, fd_set * readfds, int * numClientes, int arrayClientes[]);
 int main(){
 	/*----------------------------------------------------
 		Descriptor del socket y buffer de datos
 	-----------------------------------------------------*/
+   std::fstream file;
    int sd, new_sd;
    struct sockaddr_in sockname, from;
-   std::string buffer;
+   char buffer[100];
    socklen_t from_len;
    fd_set readfds, auxfds;
    int salida;
-   int arrayClientes[20];
+   int arrayClientes[MAX_CLIENTS];
    int numClientes=0;
    //contadores
    int i,j,k;
@@ -91,13 +96,14 @@ int main(){
                      if(numClientes < MAX_CLIENTS){
                         arrayClientes[numClientes] = new_sd;
                         numClientes++;
+                        bzero(buffer,sizeof(buffer));
                         FD_SET(new_sd,&readfds);
-                        strcpy(buffer, "Bienvenido al Buscaminas\n");
+                        strcpy(buffer, "Bienvenidos\0");
                         send(new_sd,buffer,strlen(buffer),0);
                      }
                      else{
                         bzero(buffer,sizeof(buffer));
-                        strcpy(buffer,"Demasiados clientes conectados\n");
+                        strcpy(buffer,"Demasiados clientes conectados\0");
                         send(new_sd,buffer,strlen(buffer),0);
                         close(new_sd);
                      }
@@ -122,24 +128,116 @@ int main(){
                else{
                   bzero(buffer,sizeof(buffer));
                   recibidos = recv(i,buffer,sizeof(buffer),0);
+                  // std::cout << buffer << '\n';
                   if(recibidos>0){
                      if(strcmp(buffer,"SALIR\n") == 0){
                         salirCliente(i,&readfds,&numClientes,arrayClientes);
                      }
                      else{
-                        //AQUI VA EL CODIGO
-                        // sprintf(identificador,"%d: %s",i,buffer);
-                        // bzero(buffer,sizeof(buffer));
-                        // strcpy(buffer,identificador);
-                        // for(j=0; j<numClientes; j++){
-                        //    if(arrayClientes[j]!=i){
-                        //       send(arrayClientes[j],buffer,strlen(buffer),0);
-                        //    }
+                        // if(strstr(buffer, "USUARIO")!=NULL){
+                        //    std::cout << "cat" << '\n';
+                        //    send(i,buffer,strlen(buffer),0);
                         // }
+                        // else if(strstr(buffer, "PASSWORD")!=NULL){
+                        //    std::cout << "meow" << '\n';
+                        //    send(i,buffer,strlen(buffer),0);
+                        // }
+                        if(strstr(buffer, "REGISTRO")!=NULL){
+                           bool anadir=true;
+                           char *dummie, *dummie1;
+                           char user[20], passwd[20];
+                           bzero(user, sizeof(user));
+                           bzero(passwd, sizeof(passwd));
+                           dummie=strstr(buffer, " -p");
+                           dummie1=strstr(buffer, "-p");
+                           int lenghtbuffer=strlen(buffer)-1, lenghtdummie=strlen(dummie)-1, lenghtdummie1=strlen(dummie1)-1;
+                           strncpy(user, buffer+12, lenghtbuffer-lenghtdummie-12);
+                           strncpy(passwd, dummie1+3, lenghtbuffer-lenghtdummie1-3);
+
+                           std::string search;
+                           std::string user_to_search;
+                           file.open("USUARIOS.txt", std::fstream::in);
+
+                           while(std::getline(file,search)){
+                              user_to_search=search.substr(0, strlen(user));
+                              if(strcmp(user_to_search.c_str(), user)==0){
+                                 anadir=false;
+                                 bzero(buffer,sizeof(buffer));
+                                 strcpy(buffer,"-Err Ya existe ese usuario\0");
+                                 send(i,buffer,strlen(buffer),0);
+                                 break;
+                              }
+                           }
+                           file.close();
+                           file.open("USUARIOS.txt", std::fstream::app);
+                           if(anadir){
+                              file << user << " " << passwd;
+                              bzero(buffer,sizeof(buffer));
+                              strcpy(buffer,"+Ok Usuario Registrado\0");
+                              send(i,buffer,strlen(buffer),0);
+                           }
+                           file.close();
+                        }
+                        else if(strstr(buffer, "USUARIO")!=NULL){
+                           bool ask_for_password=false;
+                           char usuario[20], contrasena[20];
+                           std::string search, user_to_search;
+                           int lenghtbuffer1=strlen(buffer);
+                           bzero(usuario, sizeof(usuario));
+                           bzero(contrasena, sizeof(contrasena));
+
+                           strncpy(usuario, buffer+8, lenghtbuffer1-9);
+                           file.open("USUARIOS.txt", std::fstream::in);
+
+                           while(std::getline(file,search)){
+                              user_to_search=search.substr(0, strlen(usuario));
+                              std::cout << user_to_search << '\n';
+                              if(strcmp(user_to_search.c_str(), usuario)==0){
+                                 ask_for_password=true;
+                                 bzero(buffer,sizeof(buffer));
+                                 strcpy(buffer,"+OK El usuario existe. Introduzca la contrasena\0");
+                                 send(i,buffer,strlen(buffer),0);
+                                 file.close();
+                                 break;
+                              }
+                           }
+                           if(!ask_for_password){
+                              bzero(buffer,sizeof(buffer));
+                              strcpy(buffer,"+Err El usuario no existe\0");
+                              send(i,buffer,strlen(buffer),0);
+                              file.close();
+                           }
+                           else{
+                              bzero(buffer,sizeof(buffer));
+                              recv(i,buffer,sizeof(buffer),0);
+                              std::string search, user_to_search, passwd_to_search;
+                              bool authentication=false;
+
+                              strncpy(contrasena, buffer+9, strlen(buffer)-10);
+
+                              file.open("USUARIOS.txt", std::fstream::in);
+                              while(std::getline(file,search)){
+                                 user_to_search=search.substr(0, strlen(usuario));
+                                 if(strcmp(user_to_search.c_str(), usuario)==0){
+                                    passwd_to_search=search.substr(strlen(usuario)+1, strlen(search.c_str())-strlen(usuario)-1);
+                                    if(strcmp(passwd_to_search.c_str(), contrasena)==0){
+                                       std::cout << "Contrasena correcta" << '\n';
+                                    }
+                                    else{
+                                       bzero(buffer,sizeof(buffer));
+                                       strcpy(buffer,"-Err Contraseña equivocada\0");
+                                       send(i,buffer,strlen(buffer),0);
+                                       file.close();
+                                       break;
+                                    }
+                                 }
+                              }
+                           }
+                        }
                      }
                   }
                   //Si el cliente introdujo ctrl+c
-                  if(recibidos== 0){
+                  if(recibidos==0){
                      printf("El socket %d, ha introducido ctrl+c\n", i);
                      //Eliminar ese socket
                      salirCliente(i,&readfds,&numClientes,arrayClientes);
@@ -151,4 +249,28 @@ int main(){
    }
 	close(sd);
 	return 0;
+}
+void salirCliente(int socket, fd_set * readfds, int * numClientes, int arrayClientes[]){
+
+    char buffer[250];
+    int j;
+
+    close(socket);
+    FD_CLR(socket,readfds);
+
+    //Re-estructurar el array de clientes
+    for (j = 0; j < (*numClientes) - 1; j++)
+        if (arrayClientes[j] == socket)
+            break;
+    for (; j < (*numClientes) - 1; j++)
+        (arrayClientes[j] = arrayClientes[j+1]);
+
+    (*numClientes)--;
+
+    bzero(buffer,sizeof(buffer));
+    sprintf(buffer,"Desconexión del cliente: %d\n",socket);
+
+    for(j=0; j<(*numClientes); j++)
+        if(arrayClientes[j] != socket)
+            send(arrayClientes[j],buffer,strlen(buffer),0);
 }
