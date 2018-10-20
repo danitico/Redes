@@ -9,6 +9,7 @@
 #include <unistd.h>
 #include <ctime>
 #include <arpa/inet.h>
+#include <map>
 #include <fstream>
 #define MAX_CLIENTS 2
 void salirCliente(int socket, fd_set * readfds, int * numClientes, int arrayClientes[]);
@@ -21,9 +22,10 @@ int main(){
    struct sockaddr_in sockname, from;
    char buffer[100];
    socklen_t from_len;
-   fd_set readfds, auxfds;
+   fd_set readfds, auxfds, ask_password, auth;
    int salida;
    int arrayClientes[MAX_CLIENTS];
+   std::map<int, char*> usuarios;
    int numClientes=0;
    //contadores
    int i,j,k;
@@ -70,6 +72,8 @@ int main(){
     //Inicializar los conjuntos fd_set
     FD_ZERO(&readfds);
     FD_ZERO(&auxfds);
+    FD_ZERO(&ask_password);
+    FD_ZERO(&auth);
     FD_SET(sd,&readfds);
     FD_SET(0,&readfds);
 
@@ -97,6 +101,7 @@ int main(){
                         arrayClientes[numClientes] = new_sd;
                         numClientes++;
                         bzero(buffer,sizeof(buffer));
+                        // std::cout << new_sd << '\n';
                         FD_SET(new_sd,&readfds);
                         strcpy(buffer, "Bienvenidos\0");
                         send(new_sd,buffer,strlen(buffer),0);
@@ -134,14 +139,6 @@ int main(){
                         salirCliente(i,&readfds,&numClientes,arrayClientes);
                      }
                      else{
-                        // if(strstr(buffer, "USUARIO")!=NULL){
-                        //    std::cout << "cat" << '\n';
-                        //    send(i,buffer,strlen(buffer),0);
-                        // }
-                        // else if(strstr(buffer, "PASSWORD")!=NULL){
-                        //    std::cout << "meow" << '\n';
-                        //    send(i,buffer,strlen(buffer),0);
-                        // }
                         if(strstr(buffer, "REGISTRO")!=NULL){
                            bool anadir=true;
                            char *dummie, *dummie1;
@@ -180,20 +177,24 @@ int main(){
                         }
                         else if(strstr(buffer, "USUARIO")!=NULL){
                            bool ask_for_password=false;
-                           char usuario[20], contrasena[20];
+                           char usuario[20];
+                           bzero(usuario, sizeof(usuario));
                            std::string search, user_to_search;
                            int lenghtbuffer1=strlen(buffer);
-                           bzero(usuario, sizeof(usuario));
-                           bzero(contrasena, sizeof(contrasena));
+                           // bzero(usuario, sizeof(usuario));
 
                            strncpy(usuario, buffer+8, lenghtbuffer1-9);
                            file.open("USUARIOS.txt", std::fstream::in);
 
                            while(std::getline(file,search)){
                               user_to_search=search.substr(0, strlen(usuario));
-                              std::cout << user_to_search << '\n';
                               if(strcmp(user_to_search.c_str(), usuario)==0){
                                  ask_for_password=true;
+                                 usuarios[i]=usuario;
+                                 std::cout << usuarios[i] << '\n';
+                                 // std::cout << i << '\n';
+                                 // std::cout << usuarios[i] << '\n';
+                                 FD_SET(i, &ask_password);
                                  bzero(buffer,sizeof(buffer));
                                  strcpy(buffer,"+OK El usuario existe. Introduzca la contrasena\0");
                                  send(i,buffer,strlen(buffer),0);
@@ -207,21 +208,31 @@ int main(){
                               send(i,buffer,strlen(buffer),0);
                               file.close();
                            }
-                           else{
-                              bzero(buffer,sizeof(buffer));
-                              recv(i,buffer,sizeof(buffer),0);
+                        }
+                        else if(strstr(buffer, "PASSWORD")!=NULL){
+                           if(FD_ISSET(i, &ask_password)){
+                              char contrasena[20];
+                              bzero(contrasena,sizeof(contrasena));
                               std::string search, user_to_search, passwd_to_search;
-                              bool authentication=false;
 
                               strncpy(contrasena, buffer+9, strlen(buffer)-10);
+                              // std::cout << usuarios[i] << '\n';
 
                               file.open("USUARIOS.txt", std::fstream::in);
                               while(std::getline(file,search)){
-                                 user_to_search=search.substr(0, strlen(usuario));
-                                 if(strcmp(user_to_search.c_str(), usuario)==0){
-                                    passwd_to_search=search.substr(strlen(usuario)+1, strlen(search.c_str())-strlen(usuario)-1);
+                                 user_to_search=search.substr(0, strlen(usuarios[i]));
+
+                                 if(strcmp(user_to_search.c_str(), usuarios[i])==0){
+                                    passwd_to_search=search.substr(strlen(usuarios[i])+1, strlen(search.c_str())-strlen(usuarios[i])-1);
+                                    // std::cout << contrasena << '\n';
+                                    // std::cout << passwd_to_search << '\n';
                                     if(strcmp(passwd_to_search.c_str(), contrasena)==0){
-                                       std::cout << "Contrasena correcta" << '\n';
+                                       FD_SET(i, &auth);
+                                       bzero(buffer,sizeof(buffer));
+                                       strcpy(buffer,"+OK Contrasena Correcta. Log In hecho con éxito\0");
+                                       send(i,buffer,strlen(buffer),0);
+                                       file.close();
+                                       break;
                                     }
                                     else{
                                        bzero(buffer,sizeof(buffer));
@@ -233,12 +244,18 @@ int main(){
                                  }
                               }
                            }
+                           else{
+                              bzero(buffer,sizeof(buffer));
+                              strcpy(buffer,"-Err Debe de introducir un usuario antes\0");
+                              send(i,buffer,strlen(buffer),0);
+                           }
                         }
                      }
                   }
                   //Si el cliente introdujo ctrl+c
                   if(recibidos==0){
                      printf("El socket %d, ha introducido ctrl+c\n", i);
+                     FD_CLR(i, &ask_password);
                      //Eliminar ese socket
                      salirCliente(i,&readfds,&numClientes,arrayClientes);
                   }
