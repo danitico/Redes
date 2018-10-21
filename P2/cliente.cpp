@@ -51,12 +51,18 @@ int main(int argc, char **argv){
    bzero(buffer1, sizeof(buffer1));
 
    while(1){
-      fgets(buffer,sizeof(buffer),stdin);
-      send(sd, buffer, sizeof(buffer), 0);
-      recv(sd, buffer1, sizeof(buffer1), 0);
-      std::cout << buffer1 << '\n';
       bzero(buffer,sizeof(buffer));
       bzero(buffer1, sizeof(buffer1));
+      fgets(buffer,sizeof(buffer),stdin);
+
+      send(sd, buffer, sizeof(buffer), 0);
+      recv(sd, buffer1, sizeof(buffer1), 0);
+      if(strcmp(buffer1, "SALIR\0")==0){
+         break;
+      }
+      else{
+         std::cout << buffer1 << '\n';
+      }
    }
    // while(1){
    //    std::cout << "Introduzca que quiere hacer" << '\n';

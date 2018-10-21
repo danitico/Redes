@@ -74,6 +74,7 @@ int main(){
     FD_ZERO(&auxfds);
     FD_ZERO(&ask_password);
     FD_ZERO(&auth);
+    FD_ZERO(&playing);
     FD_SET(sd,&readfds);
     FD_SET(0,&readfds);
 
@@ -118,9 +119,12 @@ int main(){
                   //Controlar si se ha introducido "SALIR", cerrando todos los sockets y finalmente saliendo del servidor. (implementar)
                   if(strcmp(buffer,"SALIR\n") == 0){
                      for(j=0; j<numClientes; j++){
-                        send(arrayClientes[j], "Desconexion servidor\n", strlen("Desconexion servidor\n"),0);
+                        send(arrayClientes[j], "SALIR\0", strlen("SALIR\0"),0);
                         close(arrayClientes[j]);
                         FD_CLR(arrayClientes[j],&readfds);
+                        FD_CLR(arrayClientes[j], &auth);
+                        FD_CLR(arrayClientes[j], &playing);
+                        FD_CLR(arrayClientes[j], &ask_password);
                      }
                      close(sd);
                      exit(-1);
@@ -255,9 +259,41 @@ int main(){
                            if(FD_ISSET(i, &auth)){
                               if(/*FD_ISSET(i, &playing)*/1){
                                  //a implementar. Por ahora voy a obtener la fila y la columna
-                                 char col;
-                                 char row;
-                                 strncpy(col, buffer+10, 0);
+                                 int row=0;
+                                 char col[2], *aux;
+                                 bzero(col,sizeof(col));
+
+                                 strncpy(col, buffer+10, 1);
+                                 aux=strstr(buffer, ",");
+                                 strncpy(aux, aux+1, strlen(aux)-1);
+                                 row=atoi(aux);
+                                 std::cout << row << '\n';
+                              }
+                              else{
+                                 bzero(buffer,sizeof(buffer));
+                                 strcpy(buffer,"-Err Debe de inicia una partida para jugar\0");
+                                 send(i,buffer,strlen(buffer),0);
+                              }
+                           }
+                           else{
+                              bzero(buffer,sizeof(buffer));
+                              strcpy(buffer,"-Err Debe de autenticarse para jugar\0");
+                              send(i,buffer,strlen(buffer),0);
+                           }
+                        }
+                        else if(strstr(buffer, "PONER-BANDERA")!=NULL){
+                           if(FD_ISSET(i, &auth)){
+                              if(/*FD_ISSET(i, &playing)*/1){
+                                 //a implementar. Por ahora voy a obtener la fila y la columna
+                                 int row=0;
+                                 char col[2], *aux;
+                                 bzero(col,sizeof(col));
+
+                                 strncpy(col, buffer+10, 1);
+                                 aux=strstr(buffer, ",");
+                                 strncpy(aux, aux+1, strlen(aux)-1);
+                                 row=atoi(aux);
+                                 std::cout << row << '\n';
                               }
                               else{
                                  bzero(buffer,sizeof(buffer));
@@ -291,6 +327,10 @@ void salirCliente(int socket, fd_set * readfds, fd_set * ask_password, fd_set * 
    char buffer[250];
    int j;
 
+   bzero(buffer,sizeof(buffer));
+   strcpy(buffer, "SALIR\0");
+   send(socket,buffer,strlen(buffer),0);
+
    close(socket);
    FD_CLR(socket,readfds);
    if(FD_ISSET(socket, ask_password)){
@@ -316,13 +356,4 @@ void salirCliente(int socket, fd_set * readfds, fd_set * ask_password, fd_set * 
    }
 
    (*numClientes)--;
-
-   bzero(buffer,sizeof(buffer));
-   sprintf(buffer,"Desconexión del cliente: %d\n",socket);
-
-   // for(j=0; j<(*numClientes); j++){
-   //    if(arrayClientes[j] != socket){
-   //       send(arrayClientes[j],buffer,strlen(buffer),0);
-   //    }
-   // }
 }
