@@ -11,8 +11,8 @@
 #include <arpa/inet.h>
 #include <map>
 #include <fstream>
-#define MAX_CLIENTS 2
-void salirCliente(int socket, fd_set * readfds, int * numClientes, int arrayClientes[]);
+#define MAX_CLIENTS 30
+void salirCliente(int socket, fd_set * readfds, fd_set * ask_password, fd_set * auth, int * numClientes, int arrayClientes[], std::map<int, std::string> & usuarios);
 int main(){
 	/*----------------------------------------------------
 		Descriptor del socket y buffer de datos
@@ -20,12 +20,12 @@ int main(){
    std::fstream file;
    int sd, new_sd;
    struct sockaddr_in sockname, from;
-   char buffer[100];
+   char buffer[250];
    socklen_t from_len;
-   fd_set readfds, auxfds, ask_password, auth;
+   fd_set readfds, auxfds, ask_password, auth, playing;
    int salida;
    int arrayClientes[MAX_CLIENTS];
-   std::map<int, char*> usuarios;
+   std::map<int, std::string> usuarios;
    int numClientes=0;
    //contadores
    int i,j,k;
@@ -49,7 +49,7 @@ int main(){
    ret = setsockopt( sd, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on));
 
    sockname.sin_family = AF_INET;
-   sockname.sin_port = htons(2000);
+   sockname.sin_port = htons(2050);
    sockname.sin_addr.s_addr = INADDR_ANY;
 
 	if (bind (sd, (struct sockaddr *) &sockname, sizeof (sockname)) == -1){
@@ -77,9 +77,6 @@ int main(){
     FD_SET(sd,&readfds);
     FD_SET(0,&readfds);
 
-
-    //Capturamos la señal SIGINT (Ctrl+c)
-    // signal(SIGINT,manejador);
 
 	/*-----------------------------------------------------------------------
 		El servidor acepta una petición
@@ -128,15 +125,13 @@ int main(){
                      close(sd);
                      exit(-1);
                   }
-                            //Mensajes que se quieran mandar a los clientes (implementar)
                }
                else{
                   bzero(buffer,sizeof(buffer));
                   recibidos = recv(i,buffer,sizeof(buffer),0);
-                  // std::cout << buffer << '\n';
                   if(recibidos>0){
                      if(strcmp(buffer,"SALIR\n") == 0){
-                        salirCliente(i,&readfds,&numClientes,arrayClientes);
+                        salirCliente(i,&readfds,&ask_password, &auth, &numClientes,arrayClientes, usuarios);
                      }
                      else{
                         if(strstr(buffer, "REGISTRO")!=NULL){
@@ -181,7 +176,6 @@ int main(){
                            bzero(usuario, sizeof(usuario));
                            std::string search, user_to_search;
                            int lenghtbuffer1=strlen(buffer);
-                           // bzero(usuario, sizeof(usuario));
 
                            strncpy(usuario, buffer+8, lenghtbuffer1-9);
                            file.open("USUARIOS.txt", std::fstream::in);
@@ -191,9 +185,6 @@ int main(){
                               if(strcmp(user_to_search.c_str(), usuario)==0){
                                  ask_for_password=true;
                                  usuarios[i]=usuario;
-                                 std::cout << usuarios[i] << '\n';
-                                 // std::cout << i << '\n';
-                                 // std::cout << usuarios[i] << '\n';
                                  FD_SET(i, &ask_password);
                                  bzero(buffer,sizeof(buffer));
                                  strcpy(buffer,"+OK El usuario existe. Introduzca la contrasena\0");
@@ -216,18 +207,16 @@ int main(){
                               std::string search, user_to_search, passwd_to_search;
 
                               strncpy(contrasena, buffer+9, strlen(buffer)-10);
-                              // std::cout << usuarios[i] << '\n';
 
                               file.open("USUARIOS.txt", std::fstream::in);
                               while(std::getline(file,search)){
-                                 user_to_search=search.substr(0, strlen(usuarios[i]));
-
-                                 if(strcmp(user_to_search.c_str(), usuarios[i])==0){
-                                    passwd_to_search=search.substr(strlen(usuarios[i])+1, strlen(search.c_str())-strlen(usuarios[i])-1);
-                                    // std::cout << contrasena << '\n';
-                                    // std::cout << passwd_to_search << '\n';
+                                 user_to_search=search.substr(0, strlen(usuarios[i].c_str()));
+                                 if(strcmp(user_to_search.c_str(), usuarios[i].c_str())==0){
+                                    passwd_to_search=search.substr(strlen(usuarios[i].c_str())+1, strlen(search.c_str())-strlen(usuarios[i].c_str())-1);
                                     if(strcmp(passwd_to_search.c_str(), contrasena)==0){
                                        FD_SET(i, &auth);
+                                       FD_CLR(i, &ask_password);
+                                       usuarios.erase(i);
                                        bzero(buffer,sizeof(buffer));
                                        strcpy(buffer,"+OK Contrasena Correcta. Log In hecho con éxito\0");
                                        send(i,buffer,strlen(buffer),0);
@@ -250,14 +239,45 @@ int main(){
                               send(i,buffer,strlen(buffer),0);
                            }
                         }
+                        else if(strcmp(buffer, "INICIAR-PARTIDA\n")==0){
+                           if(FD_ISSET(i, &auth)){
+                              bzero(buffer,sizeof(buffer));
+                              strcpy(buffer,"+OK espera\0");
+                              send(i,buffer,strlen(buffer),0);
+                           }
+                           else{
+                              bzero(buffer,sizeof(buffer));
+                              strcpy(buffer,"-Err Debe de autenticarse para jugar\0");
+                              send(i,buffer,strlen(buffer),0);
+                           }
+                        }
+                        else if(strstr(buffer, "DESCUBRIR")!=NULL){
+                           if(FD_ISSET(i, &auth)){
+                              if(/*FD_ISSET(i, &playing)*/1){
+                                 //a implementar. Por ahora voy a obtener la fila y la columna
+                                 char col;
+                                 char row;
+                                 strncpy(col, buffer+10, 0);
+                              }
+                              else{
+                                 bzero(buffer,sizeof(buffer));
+                                 strcpy(buffer,"-Err Debe de inicia una partida para jugar\0");
+                                 send(i,buffer,strlen(buffer),0);
+                              }
+                           }
+                           else{
+                              bzero(buffer,sizeof(buffer));
+                              strcpy(buffer,"-Err Debe de autenticarse para jugar\0");
+                              send(i,buffer,strlen(buffer),0);
+                           }
+                        }
                      }
                   }
                   //Si el cliente introdujo ctrl+c
                   if(recibidos==0){
                      printf("El socket %d, ha introducido ctrl+c\n", i);
-                     FD_CLR(i, &ask_password);
                      //Eliminar ese socket
-                     salirCliente(i,&readfds,&numClientes,arrayClientes);
+                     salirCliente(i, &readfds, &ask_password, &auth, &numClientes, arrayClientes, usuarios);
                   }
                }
             }
@@ -267,27 +287,42 @@ int main(){
 	close(sd);
 	return 0;
 }
-void salirCliente(int socket, fd_set * readfds, int * numClientes, int arrayClientes[]){
+void salirCliente(int socket, fd_set * readfds, fd_set * ask_password, fd_set * auth, int * numClientes, int arrayClientes[], std::map<int, std::string> & usuarios){
+   char buffer[250];
+   int j;
 
-    char buffer[250];
-    int j;
+   close(socket);
+   FD_CLR(socket,readfds);
+   if(FD_ISSET(socket, ask_password)){
+      FD_CLR(socket, ask_password);
+   }
+   if(FD_ISSET(socket, auth)){
+      FD_CLR(socket, auth);
+   }
+   if(usuarios.find(socket)!=usuarios.end()){
+      usuarios.erase(socket);
+   }
 
-    close(socket);
-    FD_CLR(socket,readfds);
 
-    //Re-estructurar el array de clientes
-    for (j = 0; j < (*numClientes) - 1; j++)
-        if (arrayClientes[j] == socket)
-            break;
-    for (; j < (*numClientes) - 1; j++)
-        (arrayClientes[j] = arrayClientes[j+1]);
+   //Re-estructurar el array de clientes
+   for(j=0;j<(*numClientes)-1; j++){
+      if(arrayClientes[j]==socket){
+         break;
+      }
+   }
 
-    (*numClientes)--;
+   for(;j<(*numClientes)-1;j++){
+      (arrayClientes[j] = arrayClientes[j+1]);
+   }
 
-    bzero(buffer,sizeof(buffer));
-    sprintf(buffer,"Desconexión del cliente: %d\n",socket);
+   (*numClientes)--;
 
-    for(j=0; j<(*numClientes); j++)
-        if(arrayClientes[j] != socket)
-            send(arrayClientes[j],buffer,strlen(buffer),0);
+   bzero(buffer,sizeof(buffer));
+   sprintf(buffer,"Desconexión del cliente: %d\n",socket);
+
+   // for(j=0; j<(*numClientes); j++){
+   //    if(arrayClientes[j] != socket){
+   //       send(arrayClientes[j],buffer,strlen(buffer),0);
+   //    }
+   // }
 }

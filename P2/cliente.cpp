@@ -12,10 +12,10 @@
 int main(int argc, char **argv){
    int sd;
    struct sockaddr_in sockname;
-   char buffer[100];
-   std::memset (buffer,'\0',100);
-   char buffer1[100];
-   std::memset (buffer1,'\0',100);
+   char buffer[250];
+   std::memset (buffer,'\0',250);
+   char buffer1[250];
+   std::memset (buffer1,'\0',250);
    socklen_t len_sockname;
 
    sd = socket (AF_INET, SOCK_STREAM, 0);
@@ -25,7 +25,7 @@ int main(int argc, char **argv){
    }
 
    sockname.sin_family = AF_INET;
-   sockname.sin_port = htons(2000);
+   sockname.sin_port = htons(2050);
    sockname.sin_addr.s_addr =  inet_addr("127.0.0.1");
 
    len_sockname = sizeof(sockname);
@@ -37,7 +37,7 @@ int main(int argc, char **argv){
 
    int opcion;
    std::string cadena, usuario, passwd, registro, bienvenida;
-   recv(sd, buffer, 100, 0);
+   recv(sd, buffer, 250, 0);
 
    if(strcmp("Demasiados clientes conectados\0", buffer)==0){
       std::cout << buffer << std::endl;
@@ -47,14 +47,8 @@ int main(int argc, char **argv){
       std::cout << buffer << "\n";//mensaje conexión correcta
    }
 
-   char a[50];
-   char b[50];
    bzero(buffer,sizeof(buffer));
    bzero(buffer1, sizeof(buffer1));
-   // bzero(a,sizeof(a));
-   // bzero(b, sizeof(b));
-   // strcpy(a, "USUARIO ");
-   // strcpy(b, "PASSWORD ");
 
    while(1){
       fgets(buffer,sizeof(buffer),stdin);
