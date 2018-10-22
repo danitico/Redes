@@ -10,7 +10,9 @@
 #include <ctime>
 #include <arpa/inet.h>
 #include <map>
+#include <vector>
 #include <fstream>
+#include "panel.hpp"
 #define MAX_CLIENTS 30
 void salirCliente(int socket, fd_set * readfds, fd_set * ask_password, fd_set * auth, int * numClientes, int arrayClientes[], std::map<int, std::string> & usuarios);
 int main(){
@@ -26,6 +28,8 @@ int main(){
    int salida;
    int arrayClientes[MAX_CLIENTS];
    std::map<int, std::string> usuarios;
+   std::vector<panel> partidas;
+   int contadorPartidas=0;
    int numClientes=0;
    //contadores
    int i,j,k;
@@ -245,9 +249,16 @@ int main(){
                         }
                         else if(strcmp(buffer, "INICIAR-PARTIDA\n")==0){
                            if(FD_ISSET(i, &auth)){
-                              bzero(buffer,sizeof(buffer));
-                              strcpy(buffer,"+OK espera\0");
-                              send(i,buffer,strlen(buffer),0);
+                              for(int j=0; j<partidas.size(); j++){
+                                 if(partidas[j].getSocket2()==-1){
+                                    partidas[j].setSocket2(i);
+                                    FD_SET(partidas[j].getSocket1(), &playing);
+                                    FD_SET(i, &playing);
+                                 }
+                              }
+                              // bzero(buffer,sizeof(buffer));
+                              // strcpy(buffer,"+OK espera\0");
+                              // send(i,buffer,strlen(buffer),0);
                            }
                            else{
                               bzero(buffer,sizeof(buffer));
@@ -306,6 +317,9 @@ int main(){
                               strcpy(buffer,"-Err Debe de autenticarse para jugar\0");
                               send(i,buffer,strlen(buffer),0);
                            }
+                        }
+                        else{
+                           //
                         }
                      }
                   }

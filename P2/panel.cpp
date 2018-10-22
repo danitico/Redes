@@ -4,13 +4,15 @@
 #include "panel.hpp"
 
 
-void panel::mostrarMatriz()const{
-	std::cout<<"ESTA ES LA MATRIZ EN SU ESTADO ACTUAL: \n";
+std::string panel::mostrarMatriz()const{
+	//std::cout<<"ESTA ES LA MATRIZ EN SU ESTADO ACTUAL: \n";
+	std::string aux;
 	for (int i = 0; i < 10; ++i){
 		for (int j = 0; j < 10; ++j){
-			std::cout<<matriz2[i][j]<<" ";
+			aux+=" "+matriz2[i][j];
+			//std::cout<<matriz2[i][j]<<" ";
 		}
-		std::cont<<"\n";
+		aux+=";";
 	}
 }
 
@@ -67,24 +69,24 @@ void panel::rellenaMatriz(){
 }
 
 
-void panel::ponerBandera(char letra, int j, int ju){//por ejemplo, pos. A 3, jugador A
+void panel::ponerBandera(char fila, int j, int ju){//por ejemplo, pos. A 3, jugador A
 	char jugador;
 	if(ju=1){
 		jugador="A";
-		if(_banderasA==20){
+		if(_banderasA==10){
 			std::cout<<"JUGADOR A: ya has puesto tu maximo de banderas.\n"
 			return;
 		}
 	}else{
 		jugador="B";
-		if(_banderasB==20){
+		if(_banderasB==10){
 			std::cout<<"JUGADOR B: ya has puesto tu maximo de banderas.\n"
 			return;
 		}
 	}
 
 	int i;
-	switch (letra){//Sacamos las coordenadas de la bandera
+	switch (fila){//Sacamos las coordenadas de la bandera
 		case "A":
 			i=0;
 		break;
@@ -144,9 +146,9 @@ void panel::ponerBandera(char letra, int j, int ju){//por ejemplo, pos. A 3, jug
 }
 
 
-void panel::comprobacionCeros(int i, int j){//FUNCION AUXILIAR DE LA CLASE
-	for (int i = 0; i < 10; ++i){
-		for (int j = 0; j < 10; ++j){
+void comprobacionCeros(int i, int j){//FUNCION AUXILIAR DE LA CLASE
+	//for (int i = 0; i < 10; ++i){
+	//	for (int j = 0; j < 10; ++j){
 				
 			if(matriz1[i-1][j]==0){
 				matriz2[i-1][j]=0;
@@ -198,15 +200,16 @@ void panel::comprobacionCeros(int i, int j){//FUNCION AUXILIAR DE LA CLASE
 			}
 					
 					
-		}
-	}
+		//}
+	//}
 
 
 }
 
-void panel::seleccionarCasilla(char letra, int j, int ju){
+std::string panel::seleccionarCasilla(char fila, int j, int ju){
+	std::string aux;
 	int i;
-	switch (letra){//Sacamos las coordenadas de la casilla
+	switch (fila){//Sacamos las coordenadas de la casilla
 		case "A":
 			i=0;
 		break;
@@ -250,17 +253,19 @@ void panel::seleccionarCasilla(char letra, int j, int ju){
 
 	//comprobamos que la casilla no ha sido ya seleccionada
 	if(matriz1[i][j]!="-"){
-		std::cout<<"Esa casilla ya ha sido seleccionada antes\n";
-		return;
+		//std::cout<<"Esa casilla ya ha sido seleccionada antes\n";
+		aux="Esa casilla ya ha sido seleccionada antes\n";
+		return aux;
 	}
 
 	//Si en la casilla seleccionada hay una bomba
 	if(matriz1[i][j]==-1){
-		std::cout<<"BOOOOOOMM!!!!!\n";
-		std::cout<<"Al jugador "<<jugador<<" le ha explotado una bomba\n";
-		std::cout<<"FIN DEL JUEGO\n";
+		//std::cout<<"BOOOOOOMM!!!!!\n";
+		aux<<"Al jugador "<<jugador<<" le ha explotado una bomba\n";
+		aux+=jugador+" Ha perdido\n";
+		aux+="FIN DEL JUEGO\n";
 		this->mostrarMatrizFinal();//se muestra la matriz al final del juego
-		return;
+		return aux;
 	}
 
 
@@ -271,9 +276,12 @@ void panel::seleccionarCasilla(char letra, int j, int ju){
 			case 0://espacio vacio
 				matriz2[i][j]==0;
 				//buscamos hasta donde llega el espacio vacio
-				for (int i = 0; i < 10; ++i){
-					for (int j = 0; j < 10; ++j){
+				//for (int i = 0; i < 10; ++i){
+				//	for (int j = 0; j < 10; ++j){
 						
+						comprobacionCeros(i, j);
+
+						/*
 							if(matriz1[i-1][j]==0){
 								matriz2[i-1][j]=0;
 								comprobacionCeros(i-1, j);
@@ -322,10 +330,11 @@ void panel::seleccionarCasilla(char letra, int j, int ju){
 							}else{
 								matriz2[i-1][j+1]==matriz1[i-1][j+1];
 							}
+							*/
 						
 						
-					}
-				}
+				//	}
+				//}
 			break;
 
 			default://si hay un numero en la casilla

@@ -40,22 +40,24 @@ class panel{
 			}
 			_banderasA=0;
 			_banderasB=0;
+			_socket1=-1;
+			_socket2=-1;
 
 		}
 
-		inline int getShocket1()const{
+		inline int getSocket1()const{
 			return _socket1;
 		}
 
-		inline int getShocket2()const{
+		inline int getSocket2()const{
 			return _socket2;
 		}
 
-		inline void setShocket1(int a){
+		inline void setSocket1(int a){
 			_socket1=a;
 		}
 
-		inline void setShocket2(int a){
+		inline void setSocket2(int a){
 			_socket2=a;
 		}
 
@@ -68,39 +70,43 @@ class panel{
 		}
 
 
-		inline void mostrarMatrizInicial()const{//muestra la matriz al comienzo del juego, antes de que haya sufrido modificacion alguna
-			std::cout<<"Se muestra la matriz inicial:\n";
+		inline std::string mostrarMatrizInicial()const{//muestra la matriz al comienzo del juego, antes de que haya sufrido modificacion alguna
+			//std::cout<<"Se muestra la matriz inicial:\n";
+			std::string aux;
 			for (int i = 0; i < 10; ++i){
 				for (int j = 0; j < 10; ++j){
-					std::cout<<matriz2[i][j]<<" "<<std::endl;
+					aux+=" "+matriz2[i][j];
 				}
-				std::cout<<"\n";
+				aux+=";"; 
 			}
 		}
 
-		void mostrarMatriz() const;//se muestra la matriz actual a los jugadores. 
+		std::string mostrarMatriz() const;//se muestra la matriz actual a los jugadores. 
 
 
 		void rellenaMatriz(); //funcion que rellena la matriz de numeros y bombas al principio del juego
 			
 
-		void ponerBandera(char letra, int j, int ju);//funcion que marca una casilla por parte de un jugador
+		std::string ponerBandera(char fila, int j, int ju);//funcion que marca una casilla por parte de un jugador
 
-		void seleccionarCasilla(char letra, int j, int ju);//ejemplo: A 2, 2 (jugador numero 2). un jugador selecciona una casilla para descubrirla
+		std::string seleccionarCasilla(char fila, int j, int ju);//ejemplo: A 2, 2 (jugador numero 2). un jugador selecciona una casilla para descubrirla
 
 
-		inline void mostrarMatrizFinal()const{//funcion que muestra la matriz al descubierto. Util para mostrarla al final de la partida
-			std::cout<<"ESTA ES LA MATRIZ DE JUEGO:\n";
+		inline std::string mostrarMatrizFinal()const{//funcion que muestra la matriz al descubierto. Util para mostrarla al final de la partida
+			//std::cout<<"ESTA ES LA MATRIZ DE JUEGO:\n";
+			std::string aux;
 			for (int i = 0; i < 10; ++i){
 				for (int j = 0; j < 10; ++j){
 					if(matriz1[i][j]==-1){
-						std::cout<<" * ";
+						//std::cout<<" * ";
+						aux+=" "+"*";
 					}
 					else{
 						std::cout<<" "<<matriz1[i][j]<<" ";
 					}
 				}
-				std::cout<<"\n";
+				//std::cout<<"\n";
+				aux+=";";
 			}
 		}
 
