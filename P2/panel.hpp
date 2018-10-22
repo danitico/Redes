@@ -18,16 +18,20 @@ class panel{
 	public:
 
 		inline panel(){//constructor de la clase
-			//matriz1.resize(10, std::std::vector<int>(10,0));
+			matriz1.resize(10, std::vector<int>(10,0));
+			/*
 			matriz1.resize(10, 0);
 			for (int i = 0; i < 10; ++i){
 				matriz1[i].resize(10, 0);
 			}
-			//matriz2.resize(10, std::std::vector<int>(10,0));
+			*/
+			matriz2.resize(10, std::vector<char>(10,0));
+			/*
 			matriz2.resize(10, 0);
 			for (int i = 0; i < 10; ++i){
 				matriz2.resize(10, 0);
 			}
+			*/
 			//al principio la matriz esta llenar de -
 			for (int i = 0; i < 10; ++i){
 				for (int j = 0; j < 10; ++j){
