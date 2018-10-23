@@ -6,7 +6,7 @@
 #include <time.h>
 #include <vector>
 
-class panel{
+class Panel{
 	private:
 		std::vector<std::vector<int> >matriz1;
 		std::vector<std::vector<char> > matriz2;//esta matriz se mostrara por pantalla
@@ -17,7 +17,7 @@ class panel{
 
 	public:
 
-		inline panel(){//constructor de la clase
+		inline Panel(){//constructor de la clase
 			matriz1.resize(10, std::vector<int>(10,0));
 			/*
 			matriz1.resize(10, 0);
@@ -62,7 +62,7 @@ class panel{
 		}
 
 		inline int getbanderasA()const{//devuelve el numero de banderas usadas por el jugador A
-			return _banderasA; 
+			return _banderasA;
 		}
 
 		inline int getbanderasB()const{
@@ -77,15 +77,15 @@ class panel{
 				for (int j = 0; j < 10; ++j){
 					aux+=" "+matriz2[i][j];
 				}
-				aux+=";"; 
+				aux+=";";
 			}
 		}
 
-		std::string mostrarMatriz() const;//se muestra la matriz actual a los jugadores. 
+		std::string mostrarMatriz() const;//se muestra la matriz actual a los jugadores.
 
 
 		void rellenaMatriz(); //funcion que rellena la matriz de numeros y bombas al principio del juego
-			
+
 
 		std::string ponerBandera(char fila, int j, int ju);//funcion que marca una casilla por parte de un jugador
 
@@ -99,7 +99,7 @@ class panel{
 				for (int j = 0; j < 10; ++j){
 					if(matriz1[i][j]==-1){
 						//std::cout<<" * ";
-						aux+=" "+"*";
+						aux = aux + " " + "*";
 					}
 					else{
 						//std::cout<<matriz1[i][j];
@@ -110,29 +110,5 @@ class panel{
 				aux+=";";
 			}
 		}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-};//FIN DEFINICION CLASE 
+};//FIN DEFINICION CLASE
 #endif

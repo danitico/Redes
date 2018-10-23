@@ -1,10 +1,9 @@
 #include <iostream>
-#include <stdlib.h>
-#include <time.h>
-#include "panel.hpp"
-
-
-std::string panel::mostrarMatriz()const{
+#include <cstdlib>
+#include <ctime>
+#include <cstring>
+#include "Panel.hpp"
+std::string Panel::mostrarMatriz()const{
 	//std::cout<<"ESTA ES LA MATRIZ EN SU ESTADO ACTUAL: \n";
 	std::string aux;
 	for (int i = 0; i < 10; ++i){
@@ -15,75 +14,64 @@ std::string panel::mostrarMatriz()const{
 		aux+=";";
 	}
 }
-
-
-
-
-
-void panel::rellenaMatriz(){
+void Panel::rellenaMatriz(){
 	srand(time(NULL));//semilla del generador de numeros aleatorios
-			int k, l;
-			int nbombas=20;//colocamos 20 bombas;
-			while(nbombas!=0){
-				k=rand()%10; //posiciones para la bomba
-				l=rand()%10;
-				matriz1[k][l]=-1;
-				nbombas--;
-			}	
-			
-			//ahora rellenamos los numeros de las casillas (0 incluido). Si la casilla vale 0, no hay bomba alrededor
-			for (int i = 0; i < 10; ++i){
-				for (int j = 0; j < 10; ++j){
-					if(matriz1[i][j]!=-1){//no hay una bomba
-						int bombasalrededor=0;
-						if(matriz1[i-1][j]==-1){
-							bombasalrededor++;
-						}
-						if(matriz1[i-1][j-1]==-1){
-							bombasalrededor++;
-						}
-						if(matriz1[i][j-1]==-1){
-							bombasalrededor++;
-						}
-						if(matriz1[i+1][j-1]==-1){
-							bombasalrededor++;
-						}
-						if(matriz1[i+1][j]==-1){
-							bombasalrededor++;
-						}
-						if(matriz1[i+1][j+1]==-1){
-							bombasalrededor++;
-						}
-						if(matriz1[i][j+1]==-1){
-							bombasalrededor++;
-						}
-						if(matriz1[i-1][j+1]==-1){
-							bombasalrededor++;
-						}
-					}
-					matriz1[i][j]=bombasalrededor;//establezco el numero de bombas alrededor
+	int k, l;
+	int nbombas=20;//colocamos 20 bombas;
+	while(nbombas!=0){
+		k=rand()%10; //posiciones para la bomba
+		l=rand()%10;
+		matriz1[k][l]=-1;
+		nbombas--;
+	}
+
+	int bombasalrededor=0;
+	//ahora rellenamos los numeros de las casillas (0 incluido). Si la casilla vale 0, no hay bomba alrededor
+	for (int i = 0; i < 10; ++i){
+		for (int j = 0; j < 10; ++j){
+			if(matriz1[i][j]!=-1){//no hay una bomba
+				bombasalrededor=0;
+				if(matriz1[i-1][j]==-1){
+					bombasalrededor++;
 				}
-
-
+				if(matriz1[i-1][j-1]==-1){
+					bombasalrededor++;
+				}
+				if(matriz1[i][j-1]==-1){
+					bombasalrededor++;
+				}
+				if(matriz1[i+1][j-1]==-1){
+					bombasalrededor++;
+				}
+				if(matriz1[i+1][j]==-1){
+					bombasalrededor++;
+				}
+				if(matriz1[i+1][j+1]==-1){
+					bombasalrededor++;
+				}
+				if(matriz1[i][j+1]==-1){
+					bombasalrededor++;
+				}
+				if(matriz1[i-1][j+1]==-1){
+					bombasalrededor++;
+				}
 			}
+			matriz1[i][j]=bombasalrededor;//establezco el numero de bombas alrededor
+		}
+	}
 }
-
-
-std::string panel::ponerBandera(char fila, int columna, int ju){//por ejemplo, pos. A 3, jugador A
-	char jugador;
+std::string Panel::ponerBandera(char fila, int columna, int ju){//por ejemplo, pos. A 3, jugador A
+	char *jugador;
 	std::string aux;
 	if(ju=1){
-		jugador="A";
+		strcpy(jugador, 'A');
+		// jugador="A";
 		if(_banderasA==10){
-			aux="JUGADOR A: ya has puesto tu maximo de banderas.\n"
-
-			for(int i=0;i<20<i++)
-			{
-				for(int k=0;k<20;k++)
-				{
-					if((matriz2[i][k]=="A" || matriz2[i][k]=="AB") && matriz1[i][k]!=-1)
-					{
-						aux=aux+"Has puesto una o varias banderas equivocadas.\n"
+			// aux="JUGADOR A: ya has puesto tu maximo de banderas.\n"
+			for(int i=0;i<20;i++){
+				for(int k=0;k<20;k++){
+					if((strcmp(matriz2[i][k], 'A') || strcmp(matriz2[i][k], 'AB')) && matriz1[i][k]!=-1){
+						aux=aux + "Has puesto una o varias banderas equivocadas.\n";
 						aux+="HAS PERDIDO\n";
 						return aux;
 					}
@@ -91,16 +79,15 @@ std::string panel::ponerBandera(char fila, int columna, int ju){//por ejemplo, p
 			}
 			return aux;
 		}
-	}else{
-		jugador="B";
+	}
+	else{
+		strcpy(jugador, 'B');
+		// jugador="B";
 		if(_banderasB==10){
-			aux="JUGADOR B: ya has puesto tu maximo de banderas.\n"
-			for(int i=0;i<20<i++)
-			{
-				for(int k=0;k<20;k++)
-				{
-					if((matriz2[i][k]=="B" || matriz2[i][k]=="AB") && matriz1[i][k]!=-1)
-					{
+			aux="JUGADOR B: ya has puesto tu maximo de banderas.\n";
+			for(int i=0;i<20;i++){
+				for(int k=0;k<20;k++){
+					if((matriz2[i][k]=="B" || matriz2[i][k]=="AB") && matriz1[i][k]!=-1){
 						aux=aux+"Has puesto una o varias banderas equivocadas.\n"
 						aux+="HAS PERDIDO\n";
 						return aux;
@@ -113,34 +100,34 @@ std::string panel::ponerBandera(char fila, int columna, int ju){//por ejemplo, p
 
 	int i;
 	switch (fila){//Sacamos las coordenadas de la bandera
-		case "A":
+		case 'A':
 			i=0;
 		break;
-		case "B":
+		case 'B':
 			i=1;
 		break;
-		case "C":
+		case 'C':
 			i=2;
 		break;
-		case "D":
+		case 'D':
 			i=3;
 		break;
-		case "E":
+		case 'E':
 			i=4;
 		break;
-		case "F":
+		case 'F':
 			i=5;
 		break;
-		case "G":
+		case 'G':
 			i=6;
 		break;
-		case "H":
+		case 'H':
 			i=7;
 		break;
-		case "I":
+		case 'I':
 			i=8;
 		break;
-		case "J":
+		case 'J':
 			i=9;
 		break;
 	}
@@ -175,7 +162,7 @@ std::string panel::ponerBandera(char fila, int columna, int ju){//por ejemplo, p
 void comprobacionCeros(int i, int j){//FUNCION AUXILIAR DE LA CLASE
 	//for (int i = 0; i < 10; ++i){
 	//	for (int j = 0; j < 10; ++j){
-				
+
 			if(matriz1[i-1][j]==0){
 				matriz2[i-1][j]=0;
 				comprobacionCeros(i-1, j);
@@ -224,46 +211,46 @@ void comprobacionCeros(int i, int j){//FUNCION AUXILIAR DE LA CLASE
 			}else{
 				matriz2[i-1][j+1]==matriz1[i-1][j+1];
 			}
-					
-					
+
+
 		//}
 	//}
 
 
 }
 
-std::string panel::seleccionarCasilla(char fila, int j, int ju){
+std::string Panel::seleccionarCasilla(char fila, int j, int ju){
 	std::string aux;
 	int i;
-	switch (fila){//Sacamos las coordenadas de la casilla
-		case "A":
+	switch (fila){//Sacamos las coordenadas de la bandera
+		case 'A':
 			i=0;
 		break;
-		case "B":
+		case 'B':
 			i=1;
 		break;
-		case "C":
+		case 'C':
 			i=2;
 		break;
-		case "D":
+		case 'D':
 			i=3;
 		break;
-		case "E":
+		case 'E':
 			i=4;
 		break;
-		case "F":
+		case 'F':
 			i=5;
 		break;
-		case "G":
+		case 'G':
 			i=6;
 		break;
-		case "H":
+		case 'H':
 			i=7;
 		break;
-		case "I":
+		case 'I':
 			i=8;
 		break;
-		case "J":
+		case 'J':
 			i=9;
 		break;
 	}
@@ -287,7 +274,7 @@ std::string panel::seleccionarCasilla(char fila, int j, int ju){
 	//Si en la casilla seleccionada hay una bomba
 	if(matriz1[i][j]==-1){
 		//std::cout<<"BOOOOOOMM!!!!!\n";
-		aux<<"Al jugador "<<jugador<<" le ha explotado una bomba\n";
+		aux="Al jugador " + jugador + " le ha explotado una bomba\n";
 		aux+=jugador+" Ha perdido\n";
 		aux+="FIN DEL JUEGO\n";
 		this->mostrarMatrizFinal();//se muestra la matriz al final del juego
@@ -304,7 +291,7 @@ std::string panel::seleccionarCasilla(char fila, int j, int ju){
 				//buscamos hasta donde llega el espacio vacio
 				//for (int i = 0; i < 10; ++i){
 				//	for (int j = 0; j < 10; ++j){
-						
+
 						comprobacionCeros(i, j);
 
 						/*
@@ -357,8 +344,8 @@ std::string panel::seleccionarCasilla(char fila, int j, int ju){
 								matriz2[i-1][j+1]==matriz1[i-1][j+1];
 							}
 							*/
-						
-						
+
+
 				//	}
 				//}
 			break;
@@ -369,5 +356,5 @@ std::string panel::seleccionarCasilla(char fila, int j, int ju){
 		}//fin switch
 
 	}
-	
+
 }
