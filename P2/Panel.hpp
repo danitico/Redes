@@ -9,7 +9,7 @@
 class Panel{
 	private:
 		std::vector<std::vector<int> >matriz1;
-		std::vector<std::vector<char> > matriz2;//esta matriz se mostrara por pantalla
+		std::vector<std::vector<std::string> > matriz2;//esta matriz se mostrara por pantalla
 		int _banderasA;//las banderas puestas por cada jugador
 		int _banderasB;
 		int _socket1;
@@ -25,7 +25,7 @@ class Panel{
 				matriz1[i].resize(10, 0);
 			}
 			*/
-			matriz2.resize(10, std::vector<char>(10,0));
+			matriz2.resize(10, std::vector<std::string>(10,0));
 			/*
 			matriz2.resize(10, 0);
 			for (int i = 0; i < 10; ++i){

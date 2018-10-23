@@ -64,13 +64,13 @@ std::string Panel::ponerBandera(char fila, int columna, int ju){//por ejemplo, p
 	char *jugador;
 	std::string aux;
 	if(ju=1){
-		strcpy(jugador, 'A');
+		strcpy(jugador, "A");
 		// jugador="A";
 		if(_banderasA==10){
 			// aux="JUGADOR A: ya has puesto tu maximo de banderas.\n"
 			for(int i=0;i<20;i++){
 				for(int k=0;k<20;k++){
-					if((strcmp(matriz2[i][k], 'A') || strcmp(matriz2[i][k], 'AB')) && matriz1[i][k]!=-1){
+					if((strcmp(matriz2[i][k], "A") || strcmp(matriz2[i][k], "AB")) && matriz1[i][k]!=-1){
 						aux=aux + "Has puesto una o varias banderas equivocadas.\n";
 						aux+="HAS PERDIDO\n";
 						return aux;
@@ -81,7 +81,7 @@ std::string Panel::ponerBandera(char fila, int columna, int ju){//por ejemplo, p
 		}
 	}
 	else{
-		strcpy(jugador, 'B');
+		strcpy(jugador, "B");
 		// jugador="B";
 		if(_banderasB==10){
 			aux="JUGADOR B: ya has puesto tu maximo de banderas.\n";
@@ -133,17 +133,18 @@ std::string Panel::ponerBandera(char fila, int columna, int ju){//por ejemplo, p
 	}
 	//ponemos la bandera
 	if(matriz2[i][columna]==jugador){
-		std::cout<<"Ya habias marcado esa casilla\n";
-		// return;
-		break;
+		aux="Ya habias marcado esa casilla\n";
+		//std::cout<<"Ya habias marcado esa casilla\n";
+		return aux;
+		
 	}
 
-	if( (matriz2[i][columna]=="A") && (jugador="B") ){
+	if( (matriz2[i][columna]=="A") && (jugador=="B") ){
 		matriz2[i][columna]="AB";
 		_banderasB++;
 	}
 
-	else if((matriz2[i][columna]=="B") && (jugador="A") ){
+	else if((matriz2[i][columna]=="B") && (jugador=="A") ){
 		matriz2[i][columna]="AB";
 		_banderasA++;
 	}
