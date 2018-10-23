@@ -83,6 +83,7 @@ class Panel{
 
 		std::string mostrarMatriz() const;//se muestra la matriz actual a los jugadores.
 
+		void comprobacionCeros(int i, int j);
 
 		void rellenaMatriz(); //funcion que rellena la matriz de numeros y bombas al principio del juego
 

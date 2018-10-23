@@ -339,10 +339,11 @@ int main(){
                }
             }
          }
-		}
+      }
+      close(sd);
+      return 0;
+      }
    }
-	close(sd);
-	return 0;
 }
 void salirCliente(int socket, fd_set * readfds, fd_set * ask_password, fd_set * auth, int * numClientes, int arrayClientes[], std::map<int, std::string> & usuarios){
    char buffer[250];

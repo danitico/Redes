@@ -88,7 +88,7 @@ std::string Panel::ponerBandera(char fila, int columna, int ju){//por ejemplo, p
 			for(int i=0;i<20;i++){
 				for(int k=0;k<20;k++){
 					if((matriz2[i][k]=="B" || matriz2[i][k]=="AB") && matriz1[i][k]!=-1){
-						aux=aux+"Has puesto una o varias banderas equivocadas.\n"
+						aux= aux + "Has puesto una o varias banderas equivocadas.\n";
 						aux+="HAS PERDIDO\n";
 						return aux;
 					}
@@ -134,7 +134,8 @@ std::string Panel::ponerBandera(char fila, int columna, int ju){//por ejemplo, p
 	//ponemos la bandera
 	if(matriz2[i][columna]==jugador){
 		std::cout<<"Ya habias marcado esa casilla\n";
-		return;
+		// return;
+		break;
 	}
 
 	if( (matriz2[i][columna]=="A") && (jugador="B") ){
@@ -159,10 +160,7 @@ std::string Panel::ponerBandera(char fila, int columna, int ju){//por ejemplo, p
 }
 
 
-void comprobacionCeros(int i, int j){//FUNCION AUXILIAR DE LA CLASE
-	//for (int i = 0; i < 10; ++i){
-	//	for (int j = 0; j < 10; ++j){
-
+void Panel::comprobacionCeros(int i, int j){//FUNCION AUXILIAR DE LA CLASE
 			if(matriz1[i-1][j]==0){
 				matriz2[i-1][j]=0;
 				comprobacionCeros(i-1, j);
@@ -257,7 +255,7 @@ std::string Panel::seleccionarCasilla(char fila, int j, int ju){
 
 
 	//sacamos el numero de jugador
-	char jugador;
+	std::string jugador;
 	if(ju=1){
 		jugador="A";
 	}else{
@@ -275,7 +273,7 @@ std::string Panel::seleccionarCasilla(char fila, int j, int ju){
 	if(matriz1[i][j]==-1){
 		//std::cout<<"BOOOOOOMM!!!!!\n";
 		aux="Al jugador " + jugador + " le ha explotado una bomba\n";
-		aux+=jugador+" Ha perdido\n";
+		aux+= jugador + " Ha perdido\n";
 		aux+="FIN DEL JUEGO\n";
 		this->mostrarMatrizFinal();//se muestra la matriz al final del juego
 		return aux;
@@ -288,73 +286,12 @@ std::string Panel::seleccionarCasilla(char fila, int j, int ju){
 		switch(casilla){
 			case 0://espacio vacio
 				matriz2[i][j]==0;
-				//buscamos hasta donde llega el espacio vacio
-				//for (int i = 0; i < 10; ++i){
-				//	for (int j = 0; j < 10; ++j){
-
-						comprobacionCeros(i, j);
-
-						/*
-							if(matriz1[i-1][j]==0){
-								matriz2[i-1][j]=0;
-								comprobacionCeros(i-1, j);
-							}else{
-								matriz2[i-1][j]==matriz1[i-1][j];
-							}
-							if(matriz1[i-1][j-1]==0){
-								matriz2[i-1][j-1]=0;
-								comprobacionCeros(i-1, j-1);
-							}else{
-								matriz2[i-1][j-1]==matriz1[i-1][j-1];
-							}
-							if(matriz1[i][j-1]==0){
-								matriz2[i][j-1]=0;
-								comprobacionCeros(i, j-1);
-							}else{
-								matriz2[i][j-1]==matriz1[i][j-1];
-							}
-							if(matriz1[i+1][j-1]==0){
-								matriz2[i+1][j-1]=0;
-								comprobacionCeros(i+1, j-1);
-							}else{
-								matriz2[i+1][j-1]==matriz1[i+1][j-1];
-							}
-							if(matriz1[i+1][j]==0){
-								matriz2[i+1][j]=0;
-								comprobacionCeros(i+1, j);
-							}else{
-								matriz2[i+1][j]==matriz1[i+1][j];
-							}
-							if(matriz1[i+1][j+1]==0){
-								matriz2[i+1][j+1]=0;
-								comprobacionCeros(i+1, j+1);
-							}else{
-								matriz2[i+1][j+1]==matriz1[i+1][j+1];
-							}
-							if(matriz1[i][j+1]==0){
-								matriz2[i][j+1]=0;
-								comprobacionCeros(i, j+1);
-							}else{
-								matriz2[i][j+1]==matriz1[i][j+1];
-							}
-							if(matriz1[i-1][j+1]==0){
-								matriz2[i-1][j-1]=0;
-								comprobacionCeros(i-1, j+1);
-							}else{
-								matriz2[i-1][j+1]==matriz1[i-1][j+1];
-							}
-							*/
-
-
-				//	}
-				//}
-			break;
+				comprobacionCeros(i, j);
+				break;
 
 			default://si hay un numero en la casilla
 				matriz2[i][j]=casilla;
-			break;
+				break;
 		}//fin switch
-
 	}
-
 }
