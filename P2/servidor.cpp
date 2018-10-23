@@ -12,7 +12,7 @@
 #include <map>
 #include <vector>
 #include <fstream>
-#include "Panel.hpp"
+// #include "Panel.hpp"
 #define MAX_CLIENTS 30
 void salirCliente(int socket, fd_set * readfds, fd_set * ask_password, fd_set * auth, int * numClientes, int arrayClientes[], std::map<int, std::string> & usuarios);
 int main(){
@@ -28,8 +28,8 @@ int main(){
    int salida;
    int arrayClientes[MAX_CLIENTS];
    std::map<int, std::string> usuarios;
-   std::vector<Panel> partidas;
-   int contadorPartidas=0;
+   // std::vector<Panel> partidas;
+   // int contadorPartidas=0;
    int numClientes=0;
    //contadores
    int i,j,k;
@@ -256,13 +256,12 @@ int main(){
                               //       FD_SET(i, &playing);
                               //    }
                               // }
-                              if(partidas.size()>0){
-                                 if(partidas[partidas.size() - 1].getSocket2()==-1){
+                              // if(partidas.size()>0){
+                              //    if(partidas[partidas.size() - 1].getSocket2()==-1){
+                              //
+                              //    }
+                              // else{
 
-                                 }
-                              else{
-
-                              }
                               // bzero(buffer,sizeof(buffer));
                               // strcpy(buffer,"+OK espera\0");
                               // send(i,buffer,strlen(buffer),0);
@@ -342,7 +341,6 @@ int main(){
       }
       close(sd);
       return 0;
-      }
    }
 }
 void salirCliente(int socket, fd_set * readfds, fd_set * ask_password, fd_set * auth, int * numClientes, int arrayClientes[], std::map<int, std::string> & usuarios){
