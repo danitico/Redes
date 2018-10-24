@@ -2,6 +2,8 @@
 #include <cstdlib>
 #include <ctime>
 #include <cstring>
+#include <string>
+#include <stdio.h>
 #include "Panel.hpp"
 std::string Panel::mostrarMatriz()const{
 	//std::cout<<"ESTA ES LA MATRIZ EN SU ESTADO ACTUAL: \n";
@@ -67,10 +69,11 @@ std::string Panel::ponerBandera(char fila, int columna, int ju){//por ejemplo, p
 		strcpy(jugador, "A");
 		// jugador="A";
 		if(_banderasA==10){
-			// aux="JUGADOR A: ya has puesto tu maximo de banderas.\n"
-			for(int i=0;i<20;i++){
-				for(int k=0;k<20;k++){
-					if((strcmp(matriz2[i][k], "A") || strcmp(matriz2[i][k], "AB")) && matriz1[i][k]!=-1){
+			aux="JUGADOR A: ya has puesto tu maximo de banderas.\n";
+			for(int i=0;i<10;i++){//cambio el 20 del for por un 10
+				for(int k=0;k<10;k++){
+					//if( (strcmp(matriz2[i][k], "A")) || ( strcmp(matriz2[i][k], "AB") )    && (matriz1[i][k]!=-1) ){
+					if(  (matriz2[i][k].compare("A")==0) || (matriz2[i][k].compare("AB")==0) && (matriz1[i][k]!=-1)   ){//para comparar string y que no de error al compilar	
 						aux=aux + "Has puesto una o varias banderas equivocadas.\n";
 						aux+="HAS PERDIDO\n";
 						return aux;
@@ -85,7 +88,7 @@ std::string Panel::ponerBandera(char fila, int columna, int ju){//por ejemplo, p
 		// jugador="B";
 		if(_banderasB==10){
 			aux="JUGADOR B: ya has puesto tu maximo de banderas.\n";
-			for(int i=0;i<20;i++){
+			for(int i=0;i<20;i++){//cambio el 20 del for por un 10
 				for(int k=0;k<20;k++){
 					if((matriz2[i][k]=="B" || matriz2[i][k]=="AB") && matriz1[i][k]!=-1){
 						aux= aux + "Has puesto una o varias banderas equivocadas.\n";
@@ -162,53 +165,70 @@ std::string Panel::ponerBandera(char fila, int columna, int ju){//por ejemplo, p
 
 
 void Panel::comprobacionCeros(int i, int j){//FUNCION AUXILIAR DE LA CLASE
+	int aux;
 			if(matriz1[i-1][j]==0){
-				matriz2[i-1][j]=0;
+				matriz2[i-1][j]=(std::string)0;
 				comprobacionCeros(i-1, j);
 			}else{
-				matriz2[i-1][j]==matriz1[i-1][j];
+				aux=matriz1[i-1][j];
+				matriz2[i-1][j]=aux;
+				//matriz2[i-1][j]=matriz1[i-1][j];
 			}
 			if(matriz1[i-1][j-1]==0){
-				matriz2[i-1][j-1]=0;
+				matriz2[i-1][j-1]=(std::string)0;
 				comprobacionCeros(i-1, j-1);
 			}else{
-				matriz2[i-1][j-1]==matriz1[i-1][j-1];
+				aux=matriz1[i-1][j-1];
+				matriz2[i-1][j-1]=aux;
+				//matriz2[i-1][j-1]=(std::string)matriz1[i-1][j-1];
 			}
 			if(matriz1[i][j-1]==0){
-				matriz2[i][j-1]=0;
+				matriz2[i][j-1]=(std::string)0;
 				comprobacionCeros(i, j-1);
 			}else{
-				matriz2[i][j-1]==matriz1[i][j-1];
+				aux=matriz1[i][j-1];
+				matriz2[i][j-1]=aux;
+				//matriz2[i][j-1]=(std::string)matriz1[i][j-1];
 			}
 			if(matriz1[i+1][j-1]==0){
-				matriz2[i+1][j-1]=0;
+				matriz2[i+1][j-1]=(std::string)0;
 				comprobacionCeros(i+1, j-1);
 			}else{
-				matriz2[i+1][j-1]==matriz1[i+1][j-1];
+				aux=matriz1[i+1][j-1];
+				matriz2[i+1][j-1]=aux;
+				//matriz2[i+1][j-1]=(std::string)matriz1[i+1][j-1];
 			}
 			if(matriz1[i+1][j]==0){
-				matriz2[i+1][j]=0;
+				matriz2[i+1][j]=(std::string)0;
 				comprobacionCeros(i+1, j);
 			}else{
-				matriz2[i+1][j]==matriz1[i+1][j];
+				aux=matriz1[i+1][j];
+				matriz2[i+1][j]=aux;
+				//matriz2[i+1][j]=(std::string)matriz1[i+1][j];
 			}
 			if(matriz1[i+1][j+1]==0){
-				matriz2[i+1][j+1]=0;
+				matriz2[i+1][j+1]=(std::string)0;
 				comprobacionCeros(i+1, j+1);
 			}else{
-				matriz2[i+1][j+1]==matriz1[i+1][j+1];
+				aux=matriz1[i+1][j+1];
+				matriz2[i+1][j+1]=aux;
+				//matriz2[i+1][j+1]=(std::string)matriz1[i+1][j+1];
 			}
 			if(matriz1[i][j+1]==0){
-				matriz2[i][j+1]=0;
+				matriz2[i][j+1]=(std::string)0;
 				comprobacionCeros(i, j+1);
 			}else{
-				matriz2[i][j+1]==matriz1[i][j+1];
+				aux=matriz1[i][j+1];
+				matriz2[i][j+1]=aux;
+				//matriz2[i][j+1]=(std::string)matriz1[i][j+1];
 			}
 			if(matriz1[i-1][j+1]==0){
-				matriz2[i-1][j-1]=0;
+				matriz2[i-1][j+1]=(std::string)0;
 				comprobacionCeros(i-1, j+1);
 			}else{
-				matriz2[i-1][j+1]==matriz1[i-1][j+1];
+				aux=matriz1[i-1][j+1];
+				matriz2[i-1][j+1]=aux;
+				//matriz2[i-1][j+1]=(std::string)matriz1[i-1][j+1];
 			}
 
 
@@ -264,7 +284,7 @@ std::string Panel::seleccionarCasilla(char fila, int j, int ju){
 	}
 
 	//comprobamos que la casilla no ha sido ya seleccionada
-	if(matriz1[i][j]!="-"){
+	if(matriz2[i][j]!="-"){
 		//std::cout<<"Esa casilla ya ha sido seleccionada antes\n";
 		aux="Esa casilla ya ha sido seleccionada antes\n";
 		return aux;
@@ -286,7 +306,7 @@ std::string Panel::seleccionarCasilla(char fila, int j, int ju){
 		int casilla=matriz1[i][j];
 		switch(casilla){
 			case 0://espacio vacio
-				matriz2[i][j]==0;
+				matriz2[i][j]=(std::string)0;
 				comprobacionCeros(i, j);
 				break;
 
