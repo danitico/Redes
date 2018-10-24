@@ -80,6 +80,8 @@ std::string Panel::ponerBandera(char fila, int columna, int ju){//por ejemplo, p
 					}
 				}
 			}
+			aux+="Has colocado correctamente las 10 banderas.\n";
+			aux+="Felicidades\nHAS GANADO\n";
 			return aux;
 		}
 	}
@@ -97,6 +99,8 @@ std::string Panel::ponerBandera(char fila, int columna, int ju){//por ejemplo, p
 					}
 				}
 			}
+			aux+="Has colocado correctamente las 10 banderas.\n";
+			aux+="Felicidades\nHAS GANADO\n";
 			return aux;
 		}
 	}
