@@ -90,9 +90,10 @@ std::string Panel::ponerBandera(char fila, int columna, int ju){//por ejemplo, p
 		// jugador="B";
 		if(_banderasB==10){
 			aux="JUGADOR B: ya has puesto tu maximo de banderas.\n";
-			for(int i=0;i<20;i++){//cambio el 20 del for por un 10
-				for(int k=0;k<20;k++){
-					if((matriz2[i][k]=="B" || matriz2[i][k]=="AB") && matriz1[i][k]!=-1){
+			for(int i=0;i<10;i++){//cambio el 20 del for por un 10
+				for(int k=0;k<10;k++){
+					//if((matriz2[i][k]=="B" || matriz2[i][k]=="AB") && matriz1[i][k]!=-1){
+					if(  (matriz2[i][k].compare("B")==0) || (matriz2[i][k].compare("AB")==0) && (matriz1[i][k]!=-1)   ){
 						aux= aux + "Has puesto una o varias banderas equivocadas.\n";
 						aux+="HAS PERDIDO\n";
 						return aux;
