@@ -23,42 +23,41 @@ void Panel::rellenaMatriz(){
 	while(nbombas!=0){
 		k=rand()%10; //posiciones para la bomba
 		l=rand()%10;
-		matriz1[k][l]=-1;
-		nbombas--;
+		
+		if(matriz1[k][l]!=-1) //solo se puede poner una bomba en cada casilla
+		{
+			matriz1[k][l]=-1;
+			nbombas--;
+		}
 	}
 	busquedaBombas();
 }
 void Panel::busquedaBombas(){
-	int bombasalrededor=0;
+	int bombasalrededor;
 	//ahora rellenamos los numeros de las casillas (0 incluido). Si la casilla vale 0, no hay bomba alrededor
-	for (int i = 0; i < 10; ++i){
-		for (int j = 0; j < 10; ++j){
-			if(matriz1[i][j]!=-1){//no hay una bomba
+	for (int i = 0; i < 10; ++i)
+	{
+		for (int j = 0; j < 10; ++j)
+		{
+			if(matriz1[i][j]!=-1)//no hay una bomba
+			{
 				bombasalrededor=0;
-				if(matriz1[i-1][j]==-1){
+				if(matriz1[i-1][j]==-1 && i>0)
 					bombasalrededor++;
-				}
-				if(matriz1[i-1][j-1]==-1){
+				if(matriz1[i-1][j-1]==-1 && i>0 && j>0)
 					bombasalrededor++;
-				}
-				if(matriz1[i][j-1]==-1){
+				if(matriz1[i][j-1]==-1 && j>0)
 					bombasalrededor++;
-				}
-				if(matriz1[i+1][j-1]==-1){
+				if(matriz1[i+1][j-1]==-1 && i<9 && j>0)
 					bombasalrededor++;
-				}
-				if(matriz1[i+1][j]==-1){
+				if(matriz1[i+1][j]==-1 && i<9)
 					bombasalrededor++;
-				}
-				if(matriz1[i+1][j+1]==-1){
+				if(matriz1[i+1][j+1]==-1 && i<9 && j<9)
 					bombasalrededor++;
-				}
-				if(matriz1[i][j+1]==-1){
+				if(matriz1[i][j+1]==-1 && j<9)
 					bombasalrededor++;
-				}
-				if(matriz1[i-1][j+1]==-1){
+				if(matriz1[i-1][j+1]==-1 && i>0 && j<9)
 					bombasalrededor++;
-				}
 			}
 			matriz1[i][j]=bombasalrededor;//establezco el numero de bombas alrededor
 		}
@@ -178,70 +177,119 @@ std::string Panel::ponerBandera(char fila, int columna, int ju){//por ejemplo, p
 
 void Panel::comprobacionCeros(int i, int j){//FUNCION AUXILIAR DE LA CLASE
 	int aux;
-			if(matriz1[i-1][j]==0){
+		if(i!=0)
+		{
+			if(matriz1[i-1][j]==0)
+			{
 				matriz2[i-1][j]=(std::string)0;
 				comprobacionCeros(i-1, j);
-			}else{
+			}
+			else
+			{
 				aux=matriz1[i-1][j];
 				matriz2[i-1][j]=aux;
 				//matriz2[i-1][j]=matriz1[i-1][j];
 			}
-			if(matriz1[i-1][j-1]==0){
+			
+			if(matriz1[i-1][j-1]==0)
+			{
 				matriz2[i-1][j-1]=(std::string)0;
 				comprobacionCeros(i-1, j-1);
-			}else{
+			}
+			else
+			{
 				aux=matriz1[i-1][j-1];
 				matriz2[i-1][j-1]=aux;
 				//matriz2[i-1][j-1]=(std::string)matriz1[i-1][j-1];
 			}
-			if(matriz1[i][j-1]==0){
-				matriz2[i][j-1]=(std::string)0;
-				comprobacionCeros(i, j-1);
-			}else{
-				aux=matriz1[i][j-1];
-				matriz2[i][j-1]=aux;
-				//matriz2[i][j-1]=(std::string)matriz1[i][j-1];
-			}
-			if(matriz1[i+1][j-1]==0){
-				matriz2[i+1][j-1]=(std::string)0;
-				comprobacionCeros(i+1, j-1);
-			}else{
-				aux=matriz1[i+1][j-1];
-				matriz2[i+1][j-1]=aux;
-				//matriz2[i+1][j-1]=(std::string)matriz1[i+1][j-1];
-			}
-			if(matriz1[i+1][j]==0){
-				matriz2[i+1][j]=(std::string)0;
-				comprobacionCeros(i+1, j);
-			}else{
-				aux=matriz1[i+1][j];
-				matriz2[i+1][j]=aux;
-				//matriz2[i+1][j]=(std::string)matriz1[i+1][j];
-			}
-			if(matriz1[i+1][j+1]==0){
-				matriz2[i+1][j+1]=(std::string)0;
-				comprobacionCeros(i+1, j+1);
-			}else{
-				aux=matriz1[i+1][j+1];
-				matriz2[i+1][j+1]=aux;
-				//matriz2[i+1][j+1]=(std::string)matriz1[i+1][j+1];
-			}
-			if(matriz1[i][j+1]==0){
-				matriz2[i][j+1]=(std::string)0;
-				comprobacionCeros(i, j+1);
-			}else{
-				aux=matriz1[i][j+1];
-				matriz2[i][j+1]=aux;
-				//matriz2[i][j+1]=(std::string)matriz1[i][j+1];
-			}
-			if(matriz1[i-1][j+1]==0){
+
+			if(matriz1[i-1][j+1]==0)
+			{
 				matriz2[i-1][j+1]=(std::string)0;
 				comprobacionCeros(i-1, j+1);
-			}else{
+			}
+			else
+			{
 				aux=matriz1[i-1][j+1];
 				matriz2[i-1][j+1]=aux;
 				//matriz2[i-1][j+1]=(std::string)matriz1[i-1][j+1];
 			}
+		}
+		else
+		{
+			if(j!=0)
+			{
+				if(matriz1[i][j-1]==0)
+				{
+					matriz2[i][j-1]=(std::string)0;
+					comprobacionCeros(i, j-1);
+				}
+				else
+				{
+					aux=matriz1[i][j-1];
+					matriz2[i][j-1]=aux;
+					//matriz2[i][j-1]=(std::string)matriz1[i][j-1];
+				}
+
+				if(matriz1[i+1][j-1]==0)
+				{
+					matriz2[i+1][j-1]=(std::string)0;
+					comprobacionCeros(i+1, j-1);
+				}
+				else
+				{
+					aux=matriz1[i+1][j-1];
+					matriz2[i+1][j-1]=aux;
+					//matriz2[i+1][j-1]=(std::string)matriz1[i+1][j-1];
+				}
+			}
+			else
+			{
+				if(i!=9)
+				{
+					if(matriz1[i+1][j]==0)
+					{
+						matriz2[i+1][j]=(std::string)0;
+						comprobacionCeros(i+1, j);
+					}
+					else
+					{
+						aux=matriz1[i+1][j];
+						matriz2[i+1][j]=aux;
+						//matriz2[i+1][j]=(std::string)matriz1[i+1][j];
+					}
+					
+					if(matriz1[i+1][j+1]==0)
+					{
+						matriz2[i+1][j+1]=(std::string)0;
+						comprobacionCeros(i+1, j+1);
+					}
+					else
+					{
+						aux=matriz1[i+1][j+1];
+						matriz2[i+1][j+1]=aux;
+						//matriz2[i+1][j+1]=(std::string)matriz1[i+1][j+1];
+					}
+				}
+				else
+				{
+					if(j!=9)
+					{
+						if(matriz1[i][j+1]==0)
+						{
+							matriz2[i][j+1]=(std::string)0;
+							comprobacionCeros(i, j+1);
+						}
+						else
+						{
+							aux=matriz1[i][j+1];
+							matriz2[i][j+1]=aux;
+							//matriz2[i][j+1]=(std::string)matriz1[i][j+1];
+						}
+					}
+				}
+			}
+		}
 }
 
 std::string Panel::seleccionarCasilla(char fila, int j, int ju){
