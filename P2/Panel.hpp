@@ -1,5 +1,5 @@
-#ifndef _PANEL_HPP
-#define _PANEL_HPP
+#ifndef PANEL_HPP
+#define PANEL_HPP
 
 #include <iostream>
 #include <stdlib.h>
@@ -19,19 +19,7 @@ class Panel{
 
 		inline Panel(){//constructor de la clase
 			matriz1.resize(10, std::vector<int>(10,0));
-			/*
-			matriz1.resize(10, 0);
-			for (int i = 0; i < 10; ++i){
-				matriz1[i].resize(10, 0);
-			}
-			*/
-			matriz2.resize(10, std::vector<std::string>(10,0));
-			/*
-			matriz2.resize(10, 0);
-			for (int i = 0; i < 10; ++i){
-				matriz2.resize(10, 0);
-			}
-			*/
+			matriz2.resize(10, std::vector<std::string>(10,""));
 			//al principio la matriz esta llenar de -
 			for (int i = 0; i < 10; ++i){
 				for (int j = 0; j < 10; ++j){
@@ -43,6 +31,18 @@ class Panel{
 			_socket1=-1;
 			_socket2=-1;
 
+		}
+
+		inline std::vector<std::vector<int> > getMatrix1(){
+			return matriz1;
+		}
+
+		inline void setMatrix1(int i, int j, int value){
+			matriz1[i][j]=value;
+		}
+
+		inline std::vector<std::vector<std::string> > getMatrix2(){
+			return matriz2;
 		}
 
 		inline int getSocket1()const{
@@ -70,18 +70,22 @@ class Panel{
 		}
 
 
-		inline std::string mostrarMatrizInicial()const{//muestra la matriz al comienzo del juego, antes de que haya sufrido modificacion alguna
+		inline std::string mostrarMatrizInicial() const{//muestra la matriz al comienzo del juego, antes de que haya sufrido modificacion alguna
 			//std::cout<<"Se muestra la matriz inicial:\n";
 			std::string aux;
 			for (int i = 0; i < 10; ++i){
 				for (int j = 0; j < 10; ++j){
-					aux+=" "+matriz2[i][j];
+					aux+=" " + matriz2[i][j];
 				}
 				aux+=";";
 			}
 		}
 
 		std::string mostrarMatriz() const;//se muestra la matriz actual a los jugadores.
+
+		void busquedaBombas();
+
+		int traduccionFila(char fila);
 
 		void comprobacionCeros(int i, int j);
 

@@ -26,7 +26,9 @@ void Panel::rellenaMatriz(){
 		matriz1[k][l]=-1;
 		nbombas--;
 	}
-
+	busquedaBombas();
+}
+void Panel::busquedaBombas(){
 	int bombasalrededor=0;
 	//ahora rellenamos los numeros de las casillas (0 incluido). Si la casilla vale 0, no hay bomba alrededor
 	for (int i = 0; i < 10; ++i){
@@ -62,45 +64,8 @@ void Panel::rellenaMatriz(){
 		}
 	}
 }
-std::string Panel::ponerBandera(char fila, int columna, int ju){//por ejemplo, pos. A 3, jugador A
-	char *jugador;
-	std::string aux;
-	if(ju=1){
-		strcpy(jugador, "A");
-		// jugador="A";
-		if(_banderasA==10){
-			aux="JUGADOR A: ya has puesto tu maximo de banderas.\n";
-			for(int i=0;i<10;i++){//cambio el 20 del for por un 10
-				for(int k=0;k<10;k++){
-					//if( (strcmp(matriz2[i][k], "A")) || ( strcmp(matriz2[i][k], "AB") )    && (matriz1[i][k]!=-1) ){
-					if(  (matriz2[i][k].compare("A")==0) || (matriz2[i][k].compare("AB")==0) && (matriz1[i][k]!=-1)   ){//para comparar string y que no de error al compilar	
-						aux=aux + "Has puesto una o varias banderas equivocadas.\n";
-						aux+="HAS PERDIDO\n";
-						return aux;
-					}
-				}
-			}
-			return aux;
-		}
-	}
-	else{
-		strcpy(jugador, "B");
-		// jugador="B";
-		if(_banderasB==10){
-			aux="JUGADOR B: ya has puesto tu maximo de banderas.\n";
-			for(int i=0;i<20;i++){//cambio el 20 del for por un 10
-				for(int k=0;k<20;k++){
-					if((matriz2[i][k]=="B" || matriz2[i][k]=="AB") && matriz1[i][k]!=-1){
-						aux= aux + "Has puesto una o varias banderas equivocadas.\n";
-						aux+="HAS PERDIDO\n";
-						return aux;
-					}
-				}
-			}
-			return aux;
-		}
-	}
 
+int traduccionFila(char fila){
 	int i;
 	switch (fila){//Sacamos las coordenadas de la bandera
 		case 'A':
@@ -134,12 +99,54 @@ std::string Panel::ponerBandera(char fila, int columna, int ju){//por ejemplo, p
 			i=9;
 		break;
 	}
+
+	return i;
+}
+std::string Panel::ponerBandera(char fila, int columna, int ju){//por ejemplo, pos. A 3, jugador A
+	char *jugador;
+	std::string aux;
+	if(ju=1){
+		strcpy(jugador, "A");
+		if(_banderasA==10){
+			aux="JUGADOR A: ya has puesto tu maximo de banderas.\n";
+			for(int i=0;i<10;i++){//cambio el 20 del for por un 10
+				for(int k=0;k<10;k++){
+					//if( (strcmp(matriz2[i][k], "A")) || ( strcmp(matriz2[i][k], "AB") )    && (matriz1[i][k]!=-1) ){
+					if(  (matriz2[i][k].compare("A")==0) || (matriz2[i][k].compare("AB")==0) && (matriz1[i][k]!=-1)   ){//para comparar string y que no de error al compilar
+						aux=aux + "Has puesto una o varias banderas equivocadas.\n";
+						aux+="HAS PERDIDO\n";
+						return aux;
+					}
+				}
+			}
+			return aux;
+		}
+	}
+	else{
+		strcpy(jugador, "B");
+		if(_banderasB==10){
+			aux="JUGADOR B: ya has puesto tu maximo de banderas.\n";
+			for(int i=0;i<20;i++){//cambio el 20 del for por un 10
+				for(int k=0;k<20;k++){
+					if((matriz2[i][k]=="B" || matriz2[i][k]=="AB") && matriz1[i][k]!=-1){
+						aux= aux + "Has puesto una o varias banderas equivocadas.\n";
+						aux+="HAS PERDIDO\n";
+						return aux;
+					}
+				}
+			}
+			return aux;
+		}
+	}
+
+	int i=traduccionFila(fila);
+
 	//ponemos la bandera
 	if(matriz2[i][columna]==jugador){
 		aux="Ya habias marcado esa casilla\n";
 		//std::cout<<"Ya habias marcado esa casilla\n";
 		return aux;
-		
+
 	}
 
 	if( (matriz2[i][columna]=="A") && (jugador=="B") ){
@@ -230,50 +237,11 @@ void Panel::comprobacionCeros(int i, int j){//FUNCION AUXILIAR DE LA CLASE
 				matriz2[i-1][j+1]=aux;
 				//matriz2[i-1][j+1]=(std::string)matriz1[i-1][j+1];
 			}
-
-
-		//}
-	//}
-
-
 }
 
 std::string Panel::seleccionarCasilla(char fila, int j, int ju){
 	std::string aux;
-	int i;
-	switch (fila){//Sacamos las coordenadas de la bandera
-		case 'A':
-			i=0;
-		break;
-		case 'B':
-			i=1;
-		break;
-		case 'C':
-			i=2;
-		break;
-		case 'D':
-			i=3;
-		break;
-		case 'E':
-			i=4;
-		break;
-		case 'F':
-			i=5;
-		break;
-		case 'G':
-			i=6;
-		break;
-		case 'H':
-			i=7;
-		break;
-		case 'I':
-			i=8;
-		break;
-		case 'J':
-			i=9;
-		break;
-	}
-
+	int i=traduccionFila(fila);
 
 	//sacamos el numero de jugador
 	std::string jugador;
