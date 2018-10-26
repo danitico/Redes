@@ -37,7 +37,8 @@ TEST(Panel, BusquedaBombas){
          }
       }
    }
-
+   prueba.setMatrix1(0, 9, -1);
+   prueba.setMatrix1(9, 0, -1);
    prueba.busquedaBombas();
 
    int j=0;
@@ -51,6 +52,9 @@ TEST(Panel, BusquedaBombas){
       objetivo[i][j]=objetivo[j][i]=2;
       j++;
    }
+   objetivo[0][9]=objetivo[9][0]=-1;
+   objetivo[0][8]=objetivo[1][8]=objetivo[1][9]=objetivo[8][0]=objetivo[8][1]=objetivo[9][1]=1;
+
 
    EXPECT_EQ(objetivo, prueba.getMatrix1());
 
@@ -61,20 +65,35 @@ TEST(Panel, BusquedaBombas){
    //    std::cout << std::endl;
    // }
 
-   //esta es la matriz que he montado. busquedaBombas nos deberia de dar esta misma. pero da SIGSEGV
+   //esta es la matriz que he montado. busquedaBombas nos deberia de dar esta misma.
    /*
-      -1  2  1  0  0  0  0  0  0  0
-       2 -1  2  1  0  0  0  0  0  0
+      -1  2  1  0  0  0  0  0  1 -1
+       2 -1  2  1  0  0  0  0  1  1
        1  2 -1  2  1  0  0  0  0  0
        0  1  2 -1  2  1  0  0  0  0
        0  0  1  2 -1  2  1  0  0  0
        0  0  0  1  2 -1  2  1  0  0
        0  0  0  0  1  2 -1  2  1  0
        0  0  0  0  0  1  2 -1  2  1
-       0  0  0  0  0  0  1  2 -1  2
-       0  0  0  0  0  0  0  1  2  -1
+       1  1  0  0  0  0  1  2 -1  2
+      -1  1  0  0  0  0  0  1  2  -1
    */
+}
+TEST(Panel, CompruebaCeros){
+   Panel prueba;
+   prueba.setMatrix1(0, 0, -1);
+   prueba.setMatrix1(0, 9, -1);
+   prueba.setMatrix1(9, 0, -1);
+   prueba.setMatrix1(9, 9, -1);
+   prueba.busquedaBombas();
 
+   prueba.comprobacionCeros(4, 4);
+   for(int i=0; i<10; i++){
+      for(int j=0; j<10; j++){
+         std::cout << prueba.getMatrix2()[i][j] << " ";
+      }
+      std::cout << std::endl;
+   }
 }
 int main(int argc, char **argv) {
     testing::InitGoogleTest(&argc, argv);

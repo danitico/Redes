@@ -19,7 +19,7 @@ class Panel{
 
 		inline Panel(){//constructor de la clase
 			matriz1.resize(10, std::vector<int>(10,0));
-			matriz2.resize(10, std::vector<std::string>(10,""));
+			matriz2.resize(10, std::vector<std::string>(10,"-"));
 			//al principio la matriz esta llenar de -
 			for (int i = 0; i < 10; ++i){
 				for (int j = 0; j < 10; ++j){
@@ -83,6 +83,8 @@ class Panel{
 
 		std::string mostrarMatriz() const;//se muestra la matriz actual a los jugadores.
 
+		void obtenerBombas(int i, int j, int r);
+
 		void busquedaBombas();
 
 		int traduccionFila(char fila);
@@ -95,7 +97,6 @@ class Panel{
 		std::string ponerBandera(char fila, int j, int ju);//funcion que marca una casilla por parte de un jugador
 
 		std::string seleccionarCasilla(char fila, int j, int ju);//ejemplo: A 2, 2 (jugador numero 2). un jugador selecciona una casilla para descubrirla
-
 
 		inline std::string mostrarMatrizFinal()const{//funcion que muestra la matriz al descubierto. Util para mostrarla al final de la partida
 			//std::cout<<"ESTA ES LA MATRIZ DE JUEGO:\n";
