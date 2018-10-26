@@ -227,7 +227,7 @@ std::string Panel::ponerBandera(char fila, int columna, int ju){//por ejemplo, p
 }
 
 
-void Panel::comprobacionCeros(int i, int j){//FUNCION AUXILIAR DE LA CLASE
+void Panel::comprobacionCeros(int i, int j){//ESTÁ MAL. INTENTA EXPLICAR EL CÓDIGO
 	int aux;
 	if(i!=0){
 		if(matriz1[i-1][j]==0){

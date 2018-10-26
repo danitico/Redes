@@ -12,7 +12,7 @@
 #include <map>
 #include <vector>
 #include <fstream>
-// #include "Panel.hpp"
+#include "Panel.hpp"
 #define MAX_CLIENTS 30
 void salirCliente(int socket, fd_set * readfds, fd_set * ask_password, fd_set * auth, int * numClientes, int arrayClientes[], std::map<int, std::string> & usuarios);
 int main(){
@@ -24,11 +24,11 @@ int main(){
    struct sockaddr_in sockname, from;
    char buffer[250];
    socklen_t from_len;
-   fd_set readfds, auxfds, ask_password, auth, playing;
+   fd_set readfds, auxfds, ask_password, auth, waiting_for_player, playing;
    int salida;
    int arrayClientes[MAX_CLIENTS];
    std::map<int, std::string> usuarios;
-   // std::vector<Panel> partidas;
+   std::vector<Panel> partidas;
    // int contadorPartidas=0;
    int numClientes=0;
    //contadores
@@ -78,6 +78,7 @@ int main(){
     FD_ZERO(&auxfds);
     FD_ZERO(&ask_password);
     FD_ZERO(&auth);
+    FD_ZERO(&waiting_for_player);
     FD_ZERO(&playing);
     FD_SET(sd,&readfds);
     FD_SET(0,&readfds);
@@ -130,6 +131,7 @@ int main(){
                         FD_CLR(arrayClientes[j], &playing);
                         FD_CLR(arrayClientes[j], &ask_password);
                      }
+                     std::cout << "HOLA" << '\n';
                      close(sd);
                      exit(-1);
                   }
@@ -256,11 +258,41 @@ int main(){
                               //       FD_SET(i, &playing);
                               //    }
                               // }
-                              // if(partidas.size()>0){
-                              //    if(partidas[partidas.size() - 1].getSocket2()==-1){
-                              //
-                              //    }
-                              // else{
+                              if(partidas.size()>0){
+                                 int id_partida=partidas.size() - 1;
+                                 if(partidas[id_partida].getSocket2()==-1){
+                                    partidas[id_partida].setSocket2(i);
+                                    FD_CLR(partidas[id_partida].getSocket1(), &waiting_for_player);
+                                    FD_SET(partidas[id_partida].getSocket1(), &playing);
+                                    FD_SET(i, &playing);
+                                    bzero(buffer,sizeof(buffer));
+                                    strcpy(buffer,"+OK Comienza la partida\0");
+                                    send(i, buffer, strlen(buffer), 0);
+                                    send(partidas[id_partida].getSocket1() ,buffer,strlen(buffer),0);
+                                 }
+                                 else{
+                                    //crear nuevo Panel
+                                    Panel nuevo;
+                                    nuevo.setSocket1(i);
+                                    FD_SET(i, &waiting_for_player);
+                                    partidas.push_back(nuevo);
+
+                                    bzero(buffer,sizeof(buffer));
+                                    strcpy(buffer,"+OK Waiting for a player\0");
+                                    send(i,buffer,strlen(buffer),0);
+                                 }
+                              }
+                              else{
+                                 //inicializar el vector
+                                 Panel nuevo;
+                                 nuevo.setSocket1(i);
+                                 FD_SET(i, &waiting_for_player);
+                                 partidas.push_back(nuevo);
+
+                                 bzero(buffer,sizeof(buffer));
+                                 strcpy(buffer,"+OK Waiting for a player\0");
+                                 send(i,buffer,strlen(buffer),0);
+                              }
 
                               // bzero(buffer,sizeof(buffer));
                               // strcpy(buffer,"+OK espera\0");
@@ -311,6 +343,7 @@ int main(){
                                  strncpy(aux, aux+1, strlen(aux)-1);
                                  row=atoi(aux);
                                  std::cout << row << '\n';
+                                 //poner funciones
                               }
                               else{
                                  bzero(buffer,sizeof(buffer));
@@ -339,9 +372,9 @@ int main(){
             }
          }
       }
-      close(sd);
-      return 0;
    }
+   // close(sd);
+   // return 0;
 }
 void salirCliente(int socket, fd_set * readfds, fd_set * ask_password, fd_set * auth, int * numClientes, int arrayClientes[], std::map<int, std::string> & usuarios){
    char buffer[250];
