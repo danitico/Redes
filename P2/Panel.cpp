@@ -226,7 +226,7 @@ std::string Panel::ponerBandera(char fila, int columna, int ju){//por ejemplo, p
 
 }
 
-
+/*
 void Panel::comprobacionCeros(int i, int j){//ESTÁ MAL. INTENTA EXPLICAR EL CÓDIGO
 	int aux;
 	if(i!=0){
@@ -304,6 +304,121 @@ void Panel::comprobacionCeros(int i, int j){//ESTÁ MAL. INTENTA EXPLICAR EL CÓ
 		}
 	}
 }
+*/
+
+
+
+
+void Panel::comprobacionCeros(int i, int j){//FUNCION AUXILIAR DE LA CLASE
+	//int aux;
+			if( (i!=0) && (matriz1[i-1][j]==0) ){//Si en esa casilla hay un cero, lo descubro y si la i ya es cero, no puedo entrar, me saldria de la matriz
+				//matriz2[i-1][j]='0';
+				matriz2[i-1][j]=(std::string)0;
+				comprobacionCeros(i-1, j);//llamo otra vez a la funcion para ver si hay mas ceros
+			}else{//Si no hay un cero, le pongo el numero correspondiente a la matriz de juego (matriz2) segun la matriz interna del programa (matriz1)
+				if(i!=0){//para no salirme de la matriz
+					matriz2[i-1][j]=std::to_string(matriz1[i-1][j]);
+				}//POR DIOS, NO ME QUITES LOS CORCHETES, QUE ME LIO
+				/*matriz2[i-1][j]==matriz1[i-1][j];
+				aux=matriz1[i-1][j];
+				matriz2[i-1][j]=aux;*/
+				//matriz2[i-1][j]=matriz1[i-1][j];
+			}
+			if( (i!=0) && (j!=0) && (matriz1[i-1][j-1]==0) ){
+				//matriz2[i-1][j-1]='0';
+				matriz2[i-1][j-1]=(std::string)0;
+				comprobacionCeros(i-1, j-1);
+			}else{
+				if((i!=0)&&(j!=0)){
+					matriz2[i-1][j-1]=std::to_string(matriz1[i-1][j-1]);
+				}
+				/*matriz2[i-1][j-1]==matriz1[i-1][j-1];
+				aux=matriz1[i-1][j-1];
+				matriz2[i-1][j-1]=aux;*/
+				//matriz2[i-1][j-1]=(std::string)matriz1[i-1][j-1];
+			}
+			if( (j!=0) &&  (matriz1[i][j-1]==0)){
+				//matriz2[i][j-1]='0';
+				matriz2[i][j-1]=(std::string)0;
+				comprobacionCeros(i, j-1);
+			}else{
+				if(j!=0){
+					matriz2[i][j-1]=std::to_string(matriz1[i][j-1]);
+				}
+				/*matriz2[i][j-1]==matriz1[i][j-1];
+				aux=matriz1[i][j-1];
+				matriz2[i][j-1]=aux;*/
+				//matriz2[i][j-1]=(std::string)matriz1[i][j-1];
+			}
+			if( (j!=0) && (i!=9) && (matriz1[i+1][j-1]==0) ){
+				//matriz2[i+1][j-1]='0';
+				matriz2[i+1][j-1]=(std::string)0;
+				comprobacionCeros(i+1, j-1);
+			}else{
+				if((j!=0)&&(i!=9)){
+					matriz2[i+1][j-1]=std::to_string(matriz1[i+1][j-1]);
+				}
+				/*matriz2[i+1][j-1]==matriz1[i+1][j-1];
+				aux=matriz1[i+1][j-1];
+				matriz2[i+1][j-1]=aux;*/
+				//matriz2[i+1][j-1]=(std::string)matriz1[i+1][j-1];
+			}
+			if( (i!=9) && (matriz1[i+1][j]==0) ){
+				//matriz2[i+1][j]='0';
+				matriz2[i+1][j]=(std::string)0;
+				comprobacionCeros(i+1, j);
+			}else{
+				if(i!=9){
+					matriz2[i+1][j]=std::to_string(matriz1[i+1][j]);
+				}
+				/*matriz2[i+1][j]==matriz1[i+1][j];
+				aux=matriz1[i+1][j];
+				matriz2[i+1][j]=aux;*/
+				//matriz2[i+1][j]=(std::string)matriz1[i+1][j];
+			}
+			if( (i!=9) && (j!=9) && (matriz1[i+1][j+1]==0) ){
+				//matriz2[i+1][j+1]='0';
+				matriz2[i+1][j+1]=(std::string)0;
+				comprobacionCeros(i+1, j+1);
+			}else{
+				if((i!=9)&&(j!=9)){
+					matriz2[i+1][j+1]=std::to_string(matriz1[i+1][j+1]);
+				}
+				/*matriz2[i+1][j+1]==matriz1[i+1][j+1];
+				aux=matriz1[i+1][j+1];
+				matriz2[i+1][j+1]=aux;*/
+				//matriz2[i+1][j+1]=(std::string)matriz1[i+1][j+1];
+			}
+			if( (j!=9) && (matriz1[i][j+1]==0) ){
+				//matriz2[i][j+1]='0';
+				matriz2[i][j+1]=(std::string)0;
+				comprobacionCeros(i, j+1);
+			}else{
+				if(j!=9){
+					matriz2[i][j+1]=std::to_string(matriz1[i][j+1]);
+				}
+				/*matriz2[i][j+1]==matriz1[i][j+1];
+				aux=matriz1[i][j+1];
+				matriz2[i][j+1]=aux;*/
+				//matriz2[i][j+1]=(std::string)matriz1[i][j+1];
+			}
+			if( (i!=0) && (j!=9) && (matriz1[i-1][j+1]==0) ){
+				//matriz2[i-1][j+1]='0';
+				matriz2[i-1][j+1]=(std::string)0;
+				comprobacionCeros(i-1, j+1);
+			}else{
+				if((i!=0)&&(j!=9)){
+					matriz2[i-1][j+1]=std::to_string(matriz1[i-1][j+1]);
+				}
+				/*matriz2[i-1][j+1]==matriz1[i-1][j+1];
+				aux=matriz1[i-1][j+1];
+				matriz2[i-1][j+1]=aux;*/
+				//matriz2[i-1][j+1]=(std::string)matriz1[i-1][j+1];
+			}
+}
+
+
+
 
 std::string Panel::seleccionarCasilla(char fila, int j, int ju){
 	std::string aux;
