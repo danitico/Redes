@@ -8,7 +8,7 @@
 
 class Panel{
 	private:
-		std::vector<std::vector<int> >matriz1;
+		std::vector<std::vector<int> >matriz1;//con esta matriz trabaja el programa internamente
 		std::vector<std::vector<std::string> > matriz2;//esta matriz se mostrara por pantalla
 		int _banderasA;//las banderas puestas por cada jugador
 		int _banderasB;
