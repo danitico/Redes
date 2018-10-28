@@ -176,10 +176,10 @@ std::string Panel::ponerBandera(int fila, char columna_letra, int socket, std::m
 	int columna=traduccionFila(columna_letra);
 
 	if(getSocket1()==socket){
-		jugador="A";
+		jugador='A';
 	}
 	else{
-		jugador="B";
+		jugador='B';
 	}
 
 	//ponemos la bandera
@@ -192,7 +192,7 @@ std::string Panel::ponerBandera(int fila, char columna_letra, int socket, std::m
 		matriz2[fila][columna]="AB";
 		_banderasB++;
 	}
-	else if((matriz2[fila][columna]=="B") && (jugador=="A") ){
+	else if(matriz2[fila][columna]=="B" && jugador=="A"){
 		matriz2[fila][columna]="AB";
 		_banderasA++;
 	}
@@ -309,7 +309,7 @@ std::string Panel::seleccionarCasilla(int fila, char columna_letra, int socket, 
 
 	//Si en la casilla seleccionada hay una bomba
 	if(matriz1[fila][columna]==-1){
-		aux="Jugador " + usuarios[socket] + " ha perdido la partida";
+		aux="Jugador " + usuarios[socket] + " ha perdido la partida\n";
 		return aux;
 	}
 	else{

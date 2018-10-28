@@ -14,6 +14,7 @@ class Panel{
 		int _banderasB;
 		int _socket1;
 		int _socket2;
+		int _turno;
 	public:
 		inline Panel(){//constructor de la clase
 			matriz1.resize(10, std::vector<int>(10,0));
@@ -23,6 +24,7 @@ class Panel{
 			_banderasB=0;
 			_socket1=-1;
 			_socket2=-1;
+			_turno=-1;
 		}
 		inline std::vector<std::vector<int> > getMatrix1(){
 			return matriz1;

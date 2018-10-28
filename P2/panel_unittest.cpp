@@ -90,7 +90,7 @@ TEST(Panel, CompruebaCeros){
    prueba.busquedaBombas();
 
 
-   prueba.comprobacionCeros(2, 2);
+   // prueba.comprobacionCeros(2, 2);
    prueba.comprobacionCeros(5, 7);
    for(int i=0; i<10; i++){
       for(int j=0; j<10; j++){
@@ -99,16 +99,16 @@ TEST(Panel, CompruebaCeros){
       std::cout << std::endl;
    }
 }
-TEST(Panel, ColocarBandera){
+TEST(Panel, diez_banderas){
    Panel prueba, prueba1;
    std::map<int, std::string> usuarios;
    usuarios[1]="pipo";
    usuarios[2]="pipo1";
 
    prueba.setSocket1(1);
-   prueba.setSocket1(2);
+   prueba.setSocket2(2);
    prueba1.setSocket1(1);
-   prueba1.setSocket1(2);
+   prueba1.setSocket2(2);
 
    prueba.setMatrix1(1, 1, -1);
    prueba.setMatrix1(4, 9, -1);
@@ -153,6 +153,47 @@ TEST(Panel, ColocarBandera){
    EXPECT_EQ(prueba1.ponerBandera(4, 'A', 2, usuarios), "");
    EXPECT_EQ(prueba1.ponerBandera(1, 'F', 2, usuarios), "");
    EXPECT_EQ(prueba1.ponerBandera(9, 'C', 2, usuarios), "+Ok. " + usuarios[2] + " ha perdido.\n");
+}
+TEST(Panel, ver_banderas_matrix){
+   Panel prueba, prueba1;
+   std::map<int, std::string> usuarios;
+   usuarios[1]="pipo";
+   usuarios[2]="pipo1";
+
+   prueba.setSocket1(1);
+   prueba.setSocket2(2);
+
+   prueba.ponerBandera(0, 'A', 1, usuarios);
+   prueba.ponerBandera(0, 'A', 2, usuarios);
+   prueba.ponerBandera(3, 'A', 2, usuarios);
+   prueba.ponerBandera(3, 'A', 1, usuarios);
+   prueba.ponerBandera(1, 'C', 1, usuarios);
+   prueba.ponerBandera(8, 'C', 2, usuarios);
+
+   EXPECT_EQ(prueba.getMatrix2()[0][0], "AB");
+   EXPECT_EQ(prueba.getMatrix2()[3][0], "AB");
+   EXPECT_EQ(prueba.getMatrix2()[1][2], "A");
+   EXPECT_EQ(prueba.getMatrix2()[8][2], "B");
+}
+TEST(Panel, seleccionar_casilla){
+   Panel prueba, prueba1;
+   std::map<int, std::string> usuarios;
+   usuarios[1]="pipo";
+   usuarios[2]="pipo1";
+
+   prueba.setSocket1(1);
+   prueba.setSocket2(2);
+
+   prueba.setMatrix1(1, 1, -1);
+   prueba.setMatrix1(4, 9, -1);
+   prueba.setMatrix1(3, 5, -1);
+   prueba.setMatrix1(2, 5, -1);
+
+   prueba.busquedaBombas();
+   EXPECT_EQ(prueba.seleccionarCasilla(1, 'B', 1, usuarios), "Jugador " + usuarios[1] + " ha perdido la partida\n");
+
+   prueba.seleccionarCasilla(1, 'C', 1, usuarios);
+   EXPECT_EQ(prueba.getMatrix2()[1][2], "1");
 }
 int main(int argc, char **argv) {
     testing::InitGoogleTest(&argc, argv);
