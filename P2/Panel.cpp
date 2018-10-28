@@ -150,59 +150,41 @@ int Panel::traduccionFila(char fila){
 			i=9;
 		break;
 	}
-
 	return i;
 }
 bool Panel::comprobarBanderas(int socket){
-	char *jugador;
 	if(getSocket1()==socket){
-		strcpy(jugador, "A");
-		if(getbanderasA()==10){
-			aux="JUGADOR A: ya has puesto tu maximo de banderas.\n";
-			for(int i=0;i<10;i++){//cambio el 20 del for por un 10
-				for(int k=0;k<10;k++){
-					if((matriz2[i][k].compare("A")==0 || matriz2[i][k].compare("AB")==0) && matriz1[i][k]!=-1){//para comparar string y que no de error al compilar
-						aux=aux + "Has puesto una o varias banderas equivocadas.\n";
-						aux+="HAS PERDIDO\n";
-						return false;
-					}
+		for(int i=0;i<10;i++){//cambio el 20 del for por un 10
+			for(int k=0;k<10;k++){
+				if((matriz2[i][k].compare("A")==0 || matriz2[i][k].compare("AB")==0) && matriz1[i][k]!=-1){//para comparar string y que no de error al compilar
+					return false;
 				}
 			}
-			aux+="Has colocado correctamente las 10 banderas.\n";
-			aux+="Felicidades\nHAS GANADO\n";
-			return true;
 		}
+		return true;
 	}
 	else{
 		strcpy(jugador, "B");
-		if(getbanderasB()==10){
-			aux="JUGADOR B: ya has puesto tu maximo de banderas.\n";
-			for(int i=0;i<10;i++){//cambio el 20 del for por un 10
-				for(int k=0;k<10;k++){
-					//if((matriz2[i][k]=="B" || matriz2[i][k]=="AB") && matriz1[i][k]!=-1){
-					if((matriz2[i][k].compare("B")==0 || matriz2[i][k].compare("AB")==0) && (matriz1[i][k]!=-1)){
-						aux= aux + "Has puesto una o varias banderas equivocadas.\n";
-						aux+="HAS PERDIDO\n";
-						return false;
-					}
+		for(int i=0;i<10;i++){//cambio el 20 del for por un 10
+			for(int k=0;k<10;k++){
+				if((matriz2[i][k].compare("B")==0 || matriz2[i][k].compare("AB")==0) && (matriz1[i][k]!=-1)){
+					return false;
 				}
 			}
-			aux+="Has colocado correctamente las 10 banderas.\n";
-			aux+="Felicidades\nHAS GANADO\n";
-			return true;
 		}
+		return true;
 	}
 }
 std::string Panel::ponerBandera(int fila, char columna_letra, int socket){//por ejemplo, pos. A 3, jugador A
-	char *jugador;
+	std::string jugador;
 	std::string aux;
 	int columna=traduccionFila(columna_letra);
 
 	if(getSocket1()==socket){
-		strcpy(jugador, "A")
+		jugador="A";
 	}
 	else{
-		strcpy(jugador, "B");
+		jugador="B";
 	}
 
 	//ponemos la bandera
@@ -228,13 +210,18 @@ std::string Panel::ponerBandera(int fila, char columna_letra, int socket){//por 
 		}
 	}
 
-	if(comprobarBanderas(socket)){
-		//mensajes
-		break;
-	}
-	else{
-		//mensajes
-		break;
+	// aux="JUGADOR A: ya has puesto tu maximo de banderas.\n";
+	// aux="JUGADOR B: ya has puesto tu maximo de banderas.\n";
+
+	if(getbanderasA()==10 || getbanderasB()==10){
+		if(comprobarBanderas(socket)){
+			aux+="Has colocado correctamente las 10 banderas.\n";
+			aux+="Felicidades\nHAS GANADO\n";
+		}
+		else{
+			aux=aux + "Has puesto una o varias banderas equivocadas.\n";
+			aux+="HAS PERDIDO\n";
+		}
 	}
 }
 void Panel::comprobacionCeros(int i, int j){//FUNCION AUXILIAR DE LA CLASE
