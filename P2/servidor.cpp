@@ -142,7 +142,7 @@ int main(){
                   recibidos = recv(i,buffer,sizeof(buffer),0);
                   if(recibidos>0){
                      if(strcmp(buffer,"SALIR\n") == 0){
-                        salirCliente(i,&readfds,&ask_password, &auth, &numClientes,arrayClientes, usuarios);
+                        salirCliente(i,&readfds,&ask_password, &auth, &waiting_for_player, &playing, &numClientes, arrayClientes, usuarios);
                      }
                      else{
                         if(strstr(buffer, "REGISTRO")!=NULL){
@@ -364,7 +364,7 @@ int main(){
                   if(recibidos==0){
                      printf("El socket %d, ha introducido ctrl+c\n", i);
                      //Eliminar ese socket
-                     salirCliente(i, &readfds, &ask_password, &auth, &numClientes, arrayClientes, usuarios);
+                     salirCliente(i, &readfds, &ask_password, &auth, &waiting_for_player, &playing, &numClientes, arrayClientes, usuarios);
                   }
                }
             }

@@ -2,7 +2,7 @@ CMAKE_MINIMUM_REQUIRED(VERSION 3.0)
 PROJECT(P2)
 find_package(GTest REQUIRED)
 include_directories(${GTEST_INCLUDE_DIRS})
-SET(CMAKE_CXX_FLAGS "-g")
+SET(CMAKE_CXX_FLAGS "-g -std=c++11 -lgcov --coverage")
 add_executable(cliente cliente.cpp)
 add_executable(servidor servidor.cpp)
 

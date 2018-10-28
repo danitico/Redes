@@ -8,6 +8,7 @@
 #include <arpa/inet.h>
 #include <cstring>
 #include <iostream>
+#include <cstdio>
 // void partida(int const & sd);
 int main(int argc, char **argv){
    int sd;

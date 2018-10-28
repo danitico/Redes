@@ -81,7 +81,7 @@ class Panel{
 		void comprobacionCeros(int i, int j);
 		void rellenaMatriz(); //funcion que rellena la matriz de numeros y bombas al principio del juego
 		bool comprobarBanderas(int socket);
-		std::string Panel::ponerBandera(int fila, char columna_letra, int socket, std::map<int, std::string> & usuarios);//funcion que marca una casilla por parte de un jugador
+		std::string ponerBandera(int fila, char columna_letra, int socket, std::map<int, std::string> & usuarios);//funcion que marca una casilla por parte de un jugador
 		std::string seleccionarCasilla(int fila, char columna_letra, int socket, std::map<int, std::string> & usuarios);//ejemplo: A 2, 2 (jugador numero 2). un jugador selecciona una casilla para descubrirla
 };
 #endif
