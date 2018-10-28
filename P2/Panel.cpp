@@ -153,82 +153,91 @@ int Panel::traduccionFila(char fila){
 
 	return i;
 }
-std::string Panel::ponerBandera(char fila, int columna, int ju){//por ejemplo, pos. A 3, jugador A
+bool Panel::comprobarBanderas(int socket){
 	char *jugador;
-	std::string aux;
-	if(ju=1){
+	if(getSocket1()==socket){
 		strcpy(jugador, "A");
-		if(_banderasA==10){
+		if(getbanderasA()==10){
 			aux="JUGADOR A: ya has puesto tu maximo de banderas.\n";
 			for(int i=0;i<10;i++){//cambio el 20 del for por un 10
 				for(int k=0;k<10;k++){
-					//if( (strcmp(matriz2[i][k], "A")) || ( strcmp(matriz2[i][k], "AB") )    && (matriz1[i][k]!=-1) ){
-					if(  (matriz2[i][k].compare("A")==0) || (matriz2[i][k].compare("AB")==0) && (matriz1[i][k]!=-1)   ){//para comparar string y que no de error al compilar
+					if((matriz2[i][k].compare("A")==0 || matriz2[i][k].compare("AB")==0) && matriz1[i][k]!=-1){//para comparar string y que no de error al compilar
 						aux=aux + "Has puesto una o varias banderas equivocadas.\n";
 						aux+="HAS PERDIDO\n";
-						return aux;
+						return false;
 					}
 				}
 			}
 			aux+="Has colocado correctamente las 10 banderas.\n";
 			aux+="Felicidades\nHAS GANADO\n";
-			return aux;
+			return true;
 		}
 	}
 	else{
 		strcpy(jugador, "B");
-		if(_banderasB==10){
+		if(getbanderasB()==10){
 			aux="JUGADOR B: ya has puesto tu maximo de banderas.\n";
 			for(int i=0;i<10;i++){//cambio el 20 del for por un 10
 				for(int k=0;k<10;k++){
 					//if((matriz2[i][k]=="B" || matriz2[i][k]=="AB") && matriz1[i][k]!=-1){
-					if(  (matriz2[i][k].compare("B")==0) || (matriz2[i][k].compare("AB")==0) && (matriz1[i][k]!=-1)   ){
+					if((matriz2[i][k].compare("B")==0 || matriz2[i][k].compare("AB")==0) && (matriz1[i][k]!=-1)){
 						aux= aux + "Has puesto una o varias banderas equivocadas.\n";
 						aux+="HAS PERDIDO\n";
-						return aux;
+						return false;
 					}
 				}
 			}
 			aux+="Has colocado correctamente las 10 banderas.\n";
 			aux+="Felicidades\nHAS GANADO\n";
-			return aux;
+			return true;
 		}
 	}
+}
+std::string Panel::ponerBandera(int fila, char columna_letra, int socket){//por ejemplo, pos. A 3, jugador A
+	char *jugador;
+	std::string aux;
+	int columna=traduccionFila(columna_letra);
 
-	int i=traduccionFila(fila);
-
-	//ponemos la bandera
-	if(matriz2[i][columna]==jugador){
-		aux="Ya habias marcado esa casilla\n";
-		//std::cout<<"Ya habias marcado esa casilla\n";
-		return aux;
-
+	if(getSocket1()==socket){
+		strcpy(jugador, "A")
+	}
+	else{
+		strcpy(jugador, "B");
 	}
 
-	if( (matriz2[i][columna]=="A") && (jugador=="B") ){
+	//ponemos la bandera
+	if(matriz2[fila][columna]==jugador){
+		aux="Ya habias marcado esa casilla\n";
+		return aux;
+	}
+
+	if(matriz2[fila][columna]=="A" && jugador=="B"){
 		matriz2[i][columna]="AB";
 		_banderasB++;
 	}
-
-	else if((matriz2[i][columna]=="B") && (jugador=="A") ){
-		matriz2[i][columna]="AB";
+	else if((matriz2[fila][columna]=="B") && (jugador=="A") ){
+		matriz2[fila][columna]="AB";
 		_banderasA++;
 	}
-
 	else{
-		matriz2[i][columna]=jugador;
-		if(jugador=="A"){
+		matriz2[fila][columna]=jugador;
+		if(getSocket1()==socket){
 			_banderasA++;
 		}else{
 			_banderasB++;
 		}
 	}
 
+	if(comprobarBanderas(socket)){
+		//mensajes
+		break;
+	}
+	else{
+		//mensajes
+		break;
+	}
 }
-
-
 void Panel::comprobacionCeros(int i, int j){//FUNCION AUXILIAR DE LA CLASE
-	//int aux;
 			visitados[i][j]=true;
 			if( (i!=0) && (matriz1[i-1][j]==0) && !visitados[i-1][j]){//Si en esa casilla hay un cero, lo descubro y si la i ya es cero, no puedo entrar, me saldria de la matriz
 				matriz2[i-1][j]='0';
@@ -295,167 +304,36 @@ void Panel::comprobacionCeros(int i, int j){//FUNCION AUXILIAR DE LA CLASE
 				}
 			}
 }
-*/
 
-
-
-
-void Panel::comprobacionCeros(int i, int j){//FUNCION AUXILIAR DE LA CLASE
-	//int aux;
-			if( (i!=0) && (matriz1[i-1][j]==0) ){//Si en esa casilla hay un cero, lo descubro y si la i ya es cero, no puedo entrar, me saldria de la matriz
-				//matriz2[i-1][j]='0';
-				matriz2[i-1][j]=(std::string)0;
-				comprobacionCeros(i-1, j);//llamo otra vez a la funcion para ver si hay mas ceros
-			}else{//Si no hay un cero, le pongo el numero correspondiente a la matriz de juego (matriz2) segun la matriz interna del programa (matriz1)
-				if(i!=0){//para no salirme de la matriz
-					matriz2[i-1][j]=std::to_string(matriz1[i-1][j]);
-				}//POR DIOS, NO ME QUITES LOS CORCHETES, QUE ME LIO
-				/*matriz2[i-1][j]==matriz1[i-1][j];
-				aux=matriz1[i-1][j];
-				matriz2[i-1][j]=aux;*/
-				//matriz2[i-1][j]=matriz1[i-1][j];
-			}
-			if( (i!=0) && (j!=0) && (matriz1[i-1][j-1]==0) ){
-				//matriz2[i-1][j-1]='0';
-				matriz2[i-1][j-1]=(std::string)0;
-				comprobacionCeros(i-1, j-1);
-			}else{
-				if((i!=0)&&(j!=0)){
-					matriz2[i-1][j-1]=std::to_string(matriz1[i-1][j-1]);
-				}
-				/*matriz2[i-1][j-1]==matriz1[i-1][j-1];
-				aux=matriz1[i-1][j-1];
-				matriz2[i-1][j-1]=aux;*/
-				//matriz2[i-1][j-1]=(std::string)matriz1[i-1][j-1];
-			}
-			if( (j!=0) &&  (matriz1[i][j-1]==0)){
-				//matriz2[i][j-1]='0';
-				matriz2[i][j-1]=(std::string)0;
-				comprobacionCeros(i, j-1);
-			}else{
-				if(j!=0){
-					matriz2[i][j-1]=std::to_string(matriz1[i][j-1]);
-				}
-				/*matriz2[i][j-1]==matriz1[i][j-1];
-				aux=matriz1[i][j-1];
-				matriz2[i][j-1]=aux;*/
-				//matriz2[i][j-1]=(std::string)matriz1[i][j-1];
-			}
-			if( (j!=0) && (i!=9) && (matriz1[i+1][j-1]==0) ){
-				//matriz2[i+1][j-1]='0';
-				matriz2[i+1][j-1]=(std::string)0;
-				comprobacionCeros(i+1, j-1);
-			}else{
-				if((j!=0)&&(i!=9)){
-					matriz2[i+1][j-1]=std::to_string(matriz1[i+1][j-1]);
-				}
-				/*matriz2[i+1][j-1]==matriz1[i+1][j-1];
-				aux=matriz1[i+1][j-1];
-				matriz2[i+1][j-1]=aux;*/
-				//matriz2[i+1][j-1]=(std::string)matriz1[i+1][j-1];
-			}
-			if( (i!=9) && (matriz1[i+1][j]==0) ){
-				//matriz2[i+1][j]='0';
-				matriz2[i+1][j]=(std::string)0;
-				comprobacionCeros(i+1, j);
-			}else{
-				if(i!=9){
-					matriz2[i+1][j]=std::to_string(matriz1[i+1][j]);
-				}
-				/*matriz2[i+1][j]==matriz1[i+1][j];
-				aux=matriz1[i+1][j];
-				matriz2[i+1][j]=aux;*/
-				//matriz2[i+1][j]=(std::string)matriz1[i+1][j];
-			}
-			if( (i!=9) && (j!=9) && (matriz1[i+1][j+1]==0) ){
-				//matriz2[i+1][j+1]='0';
-				matriz2[i+1][j+1]=(std::string)0;
-				comprobacionCeros(i+1, j+1);
-			}else{
-				if((i!=9)&&(j!=9)){
-					matriz2[i+1][j+1]=std::to_string(matriz1[i+1][j+1]);
-				}
-				/*matriz2[i+1][j+1]==matriz1[i+1][j+1];
-				aux=matriz1[i+1][j+1];
-				matriz2[i+1][j+1]=aux;*/
-				//matriz2[i+1][j+1]=(std::string)matriz1[i+1][j+1];
-			}
-			if( (j!=9) && (matriz1[i][j+1]==0) ){
-				//matriz2[i][j+1]='0';
-				matriz2[i][j+1]=(std::string)0;
-				comprobacionCeros(i, j+1);
-			}else{
-				if(j!=9){
-					matriz2[i][j+1]=std::to_string(matriz1[i][j+1]);
-				}
-				/*matriz2[i][j+1]==matriz1[i][j+1];
-				aux=matriz1[i][j+1];
-				matriz2[i][j+1]=aux;*/
-				//matriz2[i][j+1]=(std::string)matriz1[i][j+1];
-			}
-			if( (i!=0) && (j!=9) && (matriz1[i-1][j+1]==0) ){
-				//matriz2[i-1][j+1]='0';
-				matriz2[i-1][j+1]=(std::string)0;
-				comprobacionCeros(i-1, j+1);
-			}else{
-				if((i!=0)&&(j!=9)){
-					matriz2[i-1][j+1]=std::to_string(matriz1[i-1][j+1]);
-				}
-				/*matriz2[i-1][j+1]==matriz1[i-1][j+1];
-				aux=matriz1[i-1][j+1];
-				matriz2[i-1][j+1]=aux;*/
-				//matriz2[i-1][j+1]=(std::string)matriz1[i-1][j+1];
-			}
-}
-
-
-
-
-
-
-
-std::string Panel::seleccionarCasilla(char fila, int j, int ju){
+std::string Panel::seleccionarCasilla(int fila, char columna_letra, int socket, std::map<int, std::string> & usuarios){
 	std::string aux;
-	int i=traduccionFila(fila);
-
-	//sacamos el numero de jugador
-	std::string jugador;
-	if(ju=1){
-		jugador="A";
-	}else{
-		jugador="B";
-	}
+	int columna=traduccionFila(columna_letra);
 
 	//comprobamos que la casilla no ha sido ya seleccionada
-	if(matriz2[i][j]!="-"){
+	if(matriz2[fila][columna]!="-"){
 		//std::cout<<"Esa casilla ya ha sido seleccionada antes\n";
 		aux="Esa casilla ya ha sido seleccionada antes\n";
 		return aux;
 	}
 
 	//Si en la casilla seleccionada hay una bomba
-	if(matriz1[i][j]==-1){
-		//std::cout<<"BOOOOOOMM!!!!!\n";
-		aux="Al jugador " + jugador + " le ha explotado una bomba\n";
+	if(matriz1[fila][columna]==-1){
+		aux="Al jugador " + usuarios[socket] + " le ha explotado una bomba\n";
 		aux+= jugador + " Ha perdido\n";
 		aux+="FIN DEL JUEGO\n";
 		this->mostrarMatrizFinal();//se muestra la matriz al final del juego
 		return aux;
 	}
 
-
 	//Si en la casilla no hay bomba
-	if(matriz1[i][j]!=-1){
-		int casilla=matriz1[i][j];
-		switch(casilla){
-			case 0://espacio vacio
-				matriz2[i][j]=(std::string)0;
-				comprobacionCeros(i, j);
-				break;
-
-			default://si hay un numero en la casilla
-				matriz2[i][j]=casilla;
-				break;
-		}//fin switch
+	if(matriz1[fila][columna]!=-1){
+		int casilla=matriz1[fila][columna];
+		if(casilla==0){
+			matriz2[fila][columna]='0';
+			comprobacionCeros(fila, columna);
+		}
+		else{
+			matriz2[fila][columna]=std::to_string(casilla);
+		}
 	}
 }

@@ -14,6 +14,7 @@
 #include <fstream>
 #include "Panel.hpp"
 #define MAX_CLIENTS 30
+int busquedaPartidaDelJugador(std::vector<Panel> partidas);
 void salirCliente(int socket, fd_set * readfds, fd_set * ask_password, fd_set * auth, int * numClientes, int arrayClientes[], std::map<int, std::string> & usuarios);
 int main(){
 	/*----------------------------------------------------
@@ -226,7 +227,7 @@ int main(){
                                     if(strcmp(passwd_to_search.c_str(), contrasena)==0){
                                        FD_SET(i, &auth);
                                        FD_CLR(i, &ask_password);
-                                       usuarios.erase(i);
+                                       // usuarios.erase(i);
                                        bzero(buffer,sizeof(buffer));
                                        strcpy(buffer,"+OK Contrasena Correcta. Log In hecho con éxito\0");
                                        send(i,buffer,strlen(buffer),0);
@@ -299,7 +300,7 @@ int main(){
                         }
                         else if(strstr(buffer, "DESCUBRIR")!=NULL){
                            if(FD_ISSET(i, &auth)){
-                              if(/*FD_ISSET(i, &playing)*/1){
+                              if(FD_ISSET(i, &playing)){
                                  //a implementar. Por ahora voy a obtener la fila y la columna
                                  int row=0;
                                  char col[2], *aux;
@@ -309,7 +310,8 @@ int main(){
                                  aux=strstr(buffer, ",");
                                  strncpy(aux, aux+1, strlen(aux)-1);
                                  row=atoi(aux);
-                                 std::cout << row << '\n';
+
+                                 int indice_partida=busquedaPartidaDelJugador(partidas, i);
                               }
                               else{
                                  bzero(buffer,sizeof(buffer));
@@ -325,7 +327,7 @@ int main(){
                         }
                         else if(strstr(buffer, "PONER-BANDERA")!=NULL){
                            if(FD_ISSET(i, &auth)){
-                              if(/*FD_ISSET(i, &playing)*/1){
+                              if(FD_ISSET(i, &playing)){
                                  //a implementar. Por ahora voy a obtener la fila y la columna
                                  int row=0;
                                  char col[2], *aux;
@@ -335,7 +337,8 @@ int main(){
                                  aux=strstr(buffer, ",");
                                  strncpy(aux, aux+1, strlen(aux)-1);
                                  row=atoi(aux);
-                                 std::cout << row << '\n';
+
+                                 int indice_partida=busquedaPartidaDelJugador(partidas, i);
                                  //poner funciones
                               }
                               else{
@@ -366,6 +369,13 @@ int main(){
                }
             }
          }
+      }
+   }
+}
+int busquedaPartidaDelJugador(std::vector<Panel> partidas, int socket){
+   for(int i=0; i<partidas.size(); i++){
+      if(partidas[i].getSocket1()==socket || partidas[i].getSocket2()==socket){
+         return i;
       }
    }
 }

@@ -95,10 +95,11 @@ class Panel{
 
 		void rellenaMatriz(); //funcion que rellena la matriz de numeros y bombas al principio del juego
 
+		std::string comprobarBanderas();
 
-		std::string ponerBandera(char fila, int j, int ju);//funcion que marca una casilla por parte de un jugador
+		std::string ponerBandera(int fila, char columna_letra, int socket);//funcion que marca una casilla por parte de un jugador
 
-		std::string seleccionarCasilla(char fila, int j, int ju);//ejemplo: A 2, 2 (jugador numero 2). un jugador selecciona una casilla para descubrirla
+		std::string Panel::seleccionarCasilla(int fila, char columna_letra, int socket, std::map<int, std::string> & usuarios);//ejemplo: A 2, 2 (jugador numero 2). un jugador selecciona una casilla para descubrirla
 
 		inline std::string mostrarMatrizFinal()const{//funcion que muestra la matriz al descubierto. Util para mostrarla al final de la partida
 			//std::cout<<"ESTA ES LA MATRIZ DE JUEGO:\n";
