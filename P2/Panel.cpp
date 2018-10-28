@@ -150,7 +150,7 @@ int Panel::traduccionFila(char fila){
 }
 bool Panel::comprobarBanderas(int socket){
 	if(getSocket1()==socket){
-		for(int i=0;i<10;i++){//cambio el 20 del for por un 10
+		for(int i=0;i<10;i++){
 			for(int k=0;k<10;k++){
 				if((matriz2[i][k].compare("A")==0 || matriz2[i][k].compare("AB")==0) && matriz1[i][k]!=-1){//para comparar string y que no de error al compilar
 					return false;
@@ -160,8 +160,7 @@ bool Panel::comprobarBanderas(int socket){
 		return true;
 	}
 	else{
-		strcpy(jugador, "B");
-		for(int i=0;i<10;i++){//cambio el 20 del for por un 10
+		for(int i=0;i<10;i++){
 			for(int k=0;k<10;k++){
 				if((matriz2[i][k].compare("B")==0 || matriz2[i][k].compare("AB")==0) && (matriz1[i][k]!=-1)){
 					return false;
@@ -171,7 +170,7 @@ bool Panel::comprobarBanderas(int socket){
 		return true;
 	}
 }
-std::string Panel::ponerBandera(int fila, char columna_letra, int socket){//por ejemplo, pos. A 3, jugador A
+std::string Panel::ponerBandera(int fila, char columna_letra, int socket, std::map<int, std::string> & usuarios){//por ejemplo, pos. A 3, jugador A
 	std::string jugador;
 	std::string aux;
 	int columna=traduccionFila(columna_letra);
@@ -190,7 +189,7 @@ std::string Panel::ponerBandera(int fila, char columna_letra, int socket){//por 
 	}
 
 	if(matriz2[fila][columna]=="A" && jugador=="B"){
-		matriz2[i][columna]="AB";
+		matriz2[fila][columna]="AB";
 		_banderasB++;
 	}
 	else if((matriz2[fila][columna]=="B") && (jugador=="A") ){
@@ -207,27 +206,12 @@ std::string Panel::ponerBandera(int fila, char columna_letra, int socket){//por 
 		}
 	}
 
-	if(getbanderasA()==10){
-		aux="JUGADOR A: ya has puesto tu maximo de banderas.\n";
+	if(getbanderasA()==10 && getbanderasB()==10){
 		if(comprobarBanderas(socket)){
-			aux+="Has colocado correctamente las 10 banderas.\n";
-			aux+="Felicidades\nHAS GANADO\n";
+			aux="+Ok. " + usuarios[socket] + " ha ganado.\n";
 		}
 		else{
-			aux=aux + "Has puesto una o varias banderas equivocadas.\n";
-			aux+="HAS PERDIDO\n";
-		}
-	}
-
-	if(getbanderasB()==10){
-		aux="JUGADOR B: ya has puesto tu maximo de banderas.\n";
-		if(comprobarBanderas(socket)){
-			aux+="Has colocado correctamente las 10 banderas.\n";
-			aux+="Felicidades\nHAS GANADO\n";
-		}
-		else{
-			aux=aux + "Has puesto una o varias banderas equivocadas.\n";
-			aux+="HAS PERDIDO\n";
+			aux="+Ok. " + usuarios[socket] + " ha perdido.\n";
 		}
 	}
 
@@ -314,26 +298,22 @@ void Panel::comprobacionCeros(int i, int j){//FUNCION AUXILIAR DE LA CLASE
 	}
 }
 std::string Panel::seleccionarCasilla(int fila, char columna_letra, int socket, std::map<int, std::string> & usuarios){
-	std::string aux;
+	std::string aux="";
 	int columna=traduccionFila(columna_letra);
 
 	//comprobamos que la casilla no ha sido ya seleccionada
-	if(matriz2[fila][columna]!="-"){
-		aux="Esa casilla ya ha sido seleccionada antes\n";
-		return aux;
-	}
+	// if(matriz2[fila][columna]!="-"){
+	// 	aux="Esa casilla ya ha sido seleccionada antes\n";
+	// 	return aux;
+	// }
 
 	//Si en la casilla seleccionada hay una bomba
 	if(matriz1[fila][columna]==-1){
-		aux="Al jugador " + usuarios[socket] + " le ha explotado una bomba\n";
-		aux+= jugador + " Ha perdido\n";
-		aux+="FIN DEL JUEGO\n";
-		this->mostrarMatrizFinal();//se muestra la matriz al final del juego
+		aux="Jugador " + usuarios[socket] + " ha perdido la partida";
 		return aux;
 	}
-
-	//Si en la casilla no hay bomba
-	if(matriz1[fila][columna]!=-1){
+	else{
+		//Si en la casilla no hay bomba
 		int casilla=matriz1[fila][columna];
 		if(casilla==0){
 			matriz2[fila][columna]='0';

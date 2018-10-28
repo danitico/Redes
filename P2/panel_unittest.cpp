@@ -82,13 +82,16 @@ TEST(Panel, BusquedaBombas){
 TEST(Panel, CompruebaCeros){
    Panel prueba;
    prueba.setMatrix1(0, 0, -1);
-   prueba.setMatrix1(0, 4, -1);
    prueba.setMatrix1(4, 0, -1);
-   prueba.setMatrix1(4, 4, -1);
+   prueba.setMatrix1(7, 7, -1);
+   for(int i=0; i<10; i++){
+      prueba.setMatrix1(i, 4, -1);
+   }
    prueba.busquedaBombas();
 
 
    prueba.comprobacionCeros(2, 2);
+   prueba.comprobacionCeros(5, 7);
    for(int i=0; i<10; i++){
       for(int j=0; j<10; j++){
          std::cout << prueba.getMatrix2()[i][j] << " ";

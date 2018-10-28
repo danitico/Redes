@@ -19,12 +19,6 @@ class Panel{
 			matriz1.resize(10, std::vector<int>(10,0));
 			matriz2.resize(10, std::vector<std::string>(10,"-"));
 			visitados.resize(10, std::vector<bool>(10, false));
-			//al principio la matriz esta llenar de -
-			// for (int i = 0; i < 10; ++i){
-			// 	for (int j = 0; j < 10; ++j){
-			// 		matriz2[i][j]='-';
-			// 	}
-			// }
 			_banderasA=0;
 			_banderasB=0;
 			_socket1=-1;
@@ -74,7 +68,7 @@ class Panel{
 						aux = aux + " " + "*";
 					}
 					else{
-						aux+=" "+matriz1[i][j];
+						aux += " " + matriz1[i][j];
 					}
 				}
 				aux+=";";
@@ -86,8 +80,8 @@ class Panel{
 		int traduccionFila(char fila);
 		void comprobacionCeros(int i, int j);
 		void rellenaMatriz(); //funcion que rellena la matriz de numeros y bombas al principio del juego
-		std::string comprobarBanderas();
-		std::string ponerBandera(int fila, char columna_letra, int socket);//funcion que marca una casilla por parte de un jugador
+		bool comprobarBanderas(int socket);
+		std::string Panel::ponerBandera(int fila, char columna_letra, int socket, std::map<int, std::string> & usuarios);//funcion que marca una casilla por parte de un jugador
 		std::string seleccionarCasilla(int fila, char columna_letra, int socket, std::map<int, std::string> & usuarios);//ejemplo: A 2, 2 (jugador numero 2). un jugador selecciona una casilla para descubrirla
 };
 #endif

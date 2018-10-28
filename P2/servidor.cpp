@@ -14,8 +14,8 @@
 #include <fstream>
 #include "Panel.hpp"
 #define MAX_CLIENTS 30
-int busquedaPartidaDelJugador(std::vector<Panel> partidas);
-void salirCliente(int socket, fd_set * readfds, fd_set * ask_password, fd_set * auth, int * numClientes, int arrayClientes[], std::map<int, std::string> & usuarios);
+int busquedaPartidaDelJugador(std::vector<Panel> partidas, int socket);
+void salirCliente(int socket, fd_set * readfds, fd_set * ask_password, fd_set * auth, fd_set * waiting_for_player, fd_set * playing, int * numClientes, int arrayClientes[], std::map<int, std::string> & usuarios);
 int main(){
 	/*----------------------------------------------------
 		Descriptor del socket y buffer de datos
@@ -379,7 +379,7 @@ int busquedaPartidaDelJugador(std::vector<Panel> partidas, int socket){
       }
    }
 }
-void salirCliente(int socket, fd_set * readfds, fd_set * ask_password, fd_set * auth, int * numClientes, int arrayClientes[], std::map<int, std::string> & usuarios){
+void salirCliente(int socket, fd_set * readfds, fd_set * ask_password, fd_set * auth, fd_set * waiting_for_player, fd_set * playing, int * numClientes, int arrayClientes[], std::map<int, std::string> & usuarios){
    char buffer[250];
    int j;
 
@@ -392,13 +392,22 @@ void salirCliente(int socket, fd_set * readfds, fd_set * ask_password, fd_set * 
    if(FD_ISSET(socket, ask_password)){
       FD_CLR(socket, ask_password);
    }
+
    if(FD_ISSET(socket, auth)){
       FD_CLR(socket, auth);
    }
+
    if(usuarios.find(socket)!=usuarios.end()){
       usuarios.erase(socket);
    }
 
+   if(FD_ISSET(socket, waiting_for_player)){
+      FD_CLR(socket, waiting_for_player);
+   }
+
+   if(FD_ISSET(socket, playing)){
+      FD_CLR(socket, playing);
+   }
 
    //Re-estructurar el array de clientes
    for(j=0;j<(*numClientes)-1; j++){
