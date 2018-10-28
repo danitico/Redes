@@ -10,6 +10,7 @@ class Panel{
 	private:
 		std::vector<std::vector<int> >matriz1;
 		std::vector<std::vector<std::string> > matriz2;//esta matriz se mostrara por pantalla
+		std::vector<std::vector<bool> > visitados;
 		int _banderasA;//las banderas puestas por cada jugador
 		int _banderasB;
 		int _socket1;
@@ -20,12 +21,13 @@ class Panel{
 		inline Panel(){//constructor de la clase
 			matriz1.resize(10, std::vector<int>(10,0));
 			matriz2.resize(10, std::vector<std::string>(10,"-"));
+			visitados.resize(10, std::vector<bool>(10, false));
 			//al principio la matriz esta llenar de -
-			for (int i = 0; i < 10; ++i){
-				for (int j = 0; j < 10; ++j){
-					matriz2[i][j]='-';
-				}
-			}
+			// for (int i = 0; i < 10; ++i){
+			// 	for (int j = 0; j < 10; ++j){
+			// 		matriz2[i][j]='-';
+			// 	}
+			// }
 			_banderasA=0;
 			_banderasB=0;
 			_socket1=-1;
