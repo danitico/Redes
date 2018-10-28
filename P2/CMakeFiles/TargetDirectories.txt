@@ -1,5 +1,0 @@
-/home/carlos/Escritorio/Redes/Redes/P2/CMakeFiles/edit_cache.dir
-/home/carlos/Escritorio/Redes/Redes/P2/CMakeFiles/testPanel.dir
-/home/carlos/Escritorio/Redes/Redes/P2/CMakeFiles/rebuild_cache.dir
-/home/carlos/Escritorio/Redes/Redes/P2/CMakeFiles/cliente.dir
-/home/carlos/Escritorio/Redes/Redes/P2/CMakeFiles/servidor.dir

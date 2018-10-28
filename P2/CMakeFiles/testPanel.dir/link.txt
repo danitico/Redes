@@ -1,1 +1,0 @@
-/usr/bin/c++  -g  -rdynamic CMakeFiles/testPanel.dir/panel_unittest.cpp.o CMakeFiles/testPanel.dir/Panel.cpp.o  -o testPanel -Wl,-Bstatic -lgtest -Wl,-Bdynamic -lpthread 

@@ -251,13 +251,6 @@ int main(){
                         }
                         else if(strcmp(buffer, "INICIAR-PARTIDA\n")==0){
                            if(FD_ISSET(i, &auth)){
-                              // for(int j=0; j<partidas.size(); j++){
-                              //    if(partidas[j].getSocket2()==-1){
-                              //       partidas[j].setSocket2(i);
-                              //       FD_SET(partidas[j].getSocket1(), &playing);
-                              //       FD_SET(i, &playing);
-                              //    }
-                              // }
                               if(partidas.size()>0){
                                  int id_partida=partidas.size() - 1;
                                  if(partidas[id_partida].getSocket2()==-1){
@@ -358,7 +351,9 @@ int main(){
                            }
                         }
                         else{
-                           //
+                           bzero(buffer,sizeof(buffer));
+                           strcpy(buffer,"-Err No se reconoce el comando\0");
+                           send(i,buffer,strlen(buffer),0);
                         }
                      }
                   }
@@ -373,8 +368,6 @@ int main(){
          }
       }
    }
-   // close(sd);
-   // return 0;
 }
 void salirCliente(int socket, fd_set * readfds, fd_set * ask_password, fd_set * auth, int * numClientes, int arrayClientes[], std::map<int, std::string> & usuarios){
    char buffer[250];
