@@ -6,12 +6,10 @@
 #include <stdio.h>
 #include "Panel.hpp"
 std::string Panel::mostrarMatriz()const{
-	//std::cout<<"ESTA ES LA MATRIZ EN SU ESTADO ACTUAL: \n";
 	std::string aux;
 	for (int i = 0; i < 10; ++i){
 		for (int j = 0; j < 10; ++j){
 			aux+=" "+matriz2[i][j];
-			//std::cout<<matriz2[i][j]<<" ";
 		}
 		aux+=";";
 	}
@@ -104,7 +102,6 @@ void Panel::obtenerBombas(int i, int j, int r=1){
       }
    }
 }
-
 void Panel::busquedaBombas(){
 	//ahora rellenamos los numeros de las casillas (0 incluido). Si la casilla vale 0, no hay bomba alrededor
 	for(int i=0; i<10; i++){
@@ -115,7 +112,6 @@ void Panel::busquedaBombas(){
 		}
 	}
 }
-
 int Panel::traduccionFila(char fila){
 	int i;
 	switch (fila){//Sacamos las coordenadas de la bandera
@@ -205,15 +201,14 @@ std::string Panel::ponerBandera(int fila, char columna_letra, int socket){//por 
 		matriz2[fila][columna]=jugador;
 		if(getSocket1()==socket){
 			_banderasA++;
-		}else{
+		}
+		else{
 			_banderasB++;
 		}
 	}
 
-	// aux="JUGADOR A: ya has puesto tu maximo de banderas.\n";
-	// aux="JUGADOR B: ya has puesto tu maximo de banderas.\n";
-
-	if(getbanderasA()==10 || getbanderasB()==10){
+	if(getbanderasA()==10){
+		aux="JUGADOR A: ya has puesto tu maximo de banderas.\n";
 		if(comprobarBanderas(socket)){
 			aux+="Has colocado correctamente las 10 banderas.\n";
 			aux+="Felicidades\nHAS GANADO\n";
@@ -223,82 +218,107 @@ std::string Panel::ponerBandera(int fila, char columna_letra, int socket){//por 
 			aux+="HAS PERDIDO\n";
 		}
 	}
+
+	if(getbanderasB()==10){
+		aux="JUGADOR B: ya has puesto tu maximo de banderas.\n";
+		if(comprobarBanderas(socket)){
+			aux+="Has colocado correctamente las 10 banderas.\n";
+			aux+="Felicidades\nHAS GANADO\n";
+		}
+		else{
+			aux=aux + "Has puesto una o varias banderas equivocadas.\n";
+			aux+="HAS PERDIDO\n";
+		}
+	}
+
+	return aux;
 }
 void Panel::comprobacionCeros(int i, int j){//FUNCION AUXILIAR DE LA CLASE
-			visitados[i][j]=true;
-			if( (i!=0) && (matriz1[i-1][j]==0) && !visitados[i-1][j]){//Si en esa casilla hay un cero, lo descubro y si la i ya es cero, no puedo entrar, me saldria de la matriz
-				matriz2[i-1][j]='0';
-				comprobacionCeros(i-1, j);//llamo otra vez a la funcion para ver si hay mas ceros
-			}else{//Si no hay un cero, le pongo el numero correspondiente a la matriz de juego (matriz2) segun la matriz interna del programa (matriz1)
-				if(i!=0){//para no salirme de la matriz
-					matriz2[i-1][j]=std::to_string(matriz1[i-1][j]);
-				}//POR DIOS, NO ME QUITES LOS CORCHETES, QUE ME LIO
-			}
-			if( (i!=0) && (j!=0) && (matriz1[i-1][j-1]==0) && !visitados[i-1][j-1]){
-				matriz2[i-1][j-1]='0';
-				comprobacionCeros(i-1, j-1);
-			}else{
-				if((i!=0)&&(j!=0)){
-					matriz2[i-1][j-1]=std::to_string(matriz1[i-1][j-1]);
-				}
-			}
-			if( (j!=0) &&  (matriz1[i][j-1]==0) && !visitados[i][j-1]){
-				matriz2[i][j-1]='0';
-				comprobacionCeros(i, j-1);
-			}else{
-				if(j!=0){
-					matriz2[i][j-1]=std::to_string(matriz1[i][j-1]);
-				}
-			}
-			if( (j!=0) && (i!=9) && (matriz1[i+1][j-1]==0) && !visitados[i+1][j-1]){
-				matriz2[i+1][j-1]='0';
-				comprobacionCeros(i+1, j-1);
-			}else{
-				if((j!=0)&&(i!=9)){
-					matriz2[i+1][j-1]=std::to_string(matriz1[i+1][j-1]);
-				}
-			}
-			if( (i!=9) && (matriz1[i+1][j]==0) && !visitados[i+1][j]){
-				matriz2[i+1][j]='0';
-				comprobacionCeros(i+1, j);
-			}else{
-				if(i!=9){
-					matriz2[i+1][j]=std::to_string(matriz1[i+1][j]);
-				}
-			}
-			if( (i!=9) && (j!=9) && (matriz1[i+1][j+1]==0) && !visitados[i+1][j+1]){
-				matriz2[i+1][j+1]='0';
-				comprobacionCeros(i+1, j+1);
-			}else{
-				if((i!=9)&&(j!=9)){
-					matriz2[i+1][j+1]=std::to_string(matriz1[i+1][j+1]);
-				}
-			}
-			if( (j!=9) && (matriz1[i][j+1]==0) && !visitados[i][j+1]){
-				matriz2[i][j+1]='0';
-				comprobacionCeros(i, j+1);
-			}else{
-				if(j!=9){
-					matriz2[i][j+1]=std::to_string(matriz1[i][j+1]);
-				}
-			}
-			if( (i!=0) && (j!=9) && (matriz1[i-1][j+1]==0) && !visitados[i-1][j+1]){
-				matriz2[i-1][j+1]='0';
-				comprobacionCeros(i-1, j+1);
-			}else{
-				if((i!=0)&&(j!=9)){
-					matriz2[i-1][j+1]=std::to_string(matriz1[i-1][j+1]);
-				}
-			}
-}
+	visitados[i][j]=true;
+	if(i!=0 && matriz1[i-1][j]==0 && !visitados[i-1][j]){
+		//Si en esa casilla hay un cero, lo descubro y si la i ya es cero, no puedo entrar, me saldria de la matriz
+		matriz2[i-1][j]='0';
+		//llamo otra vez a la funcion para ver si hay mas ceros
+		comprobacionCeros(i-1, j);
+	}
+	else{
+		//Si no hay un cero, le pongo el numero correspondiente a la matriz de juego (matriz2) segun la matriz interna del programa (matriz1)
+		//para no salirme de la matriz
+		if(i!=0){
+			matriz2[i-1][j]=std::to_string(matriz1[i-1][j]);
+		}//POR DIOS, NO ME QUITES LOS CORCHETES, QUE ME LIO :D
+	}
 
+	if(i!=0 && j!=0 && matriz1[i-1][j-1]==0 && !visitados[i-1][j-1]){
+		matriz2[i-1][j-1]='0';
+		comprobacionCeros(i-1, j-1);
+	}
+	else{
+		if(i!=0 && j!=0){
+			matriz2[i-1][j-1]=std::to_string(matriz1[i-1][j-1]);
+		}
+	}
+	if(j!=0 && matriz1[i][j-1]==0 && !visitados[i][j-1]){
+		matriz2[i][j-1]='0';
+		comprobacionCeros(i, j-1);
+	}
+	else{
+		if(j!=0){
+			matriz2[i][j-1]=std::to_string(matriz1[i][j-1]);
+		}
+	}
+	if(j!=0 && i!=9 && matriz1[i+1][j-1]==0 && !visitados[i+1][j-1]){
+		matriz2[i+1][j-1]='0';
+		comprobacionCeros(i+1, j-1);
+	}
+	else{
+		if((j!=0)&&(i!=9)){
+			matriz2[i+1][j-1]=std::to_string(matriz1[i+1][j-1]);
+		}
+	}
+	if(i!=9 && matriz1[i+1][j]==0 && !visitados[i+1][j]){
+		matriz2[i+1][j]='0';
+		comprobacionCeros(i+1, j);
+	}
+	else{
+		if(i!=9){
+			matriz2[i+1][j]=std::to_string(matriz1[i+1][j]);
+		}
+	}
+	if(i!=9 && j!=9 && matriz1[i+1][j+1]==0 && !visitados[i+1][j+1]){
+		matriz2[i+1][j+1]='0';
+		comprobacionCeros(i+1, j+1);
+	}
+	else{
+		if(i!=9 && j!=9){
+			matriz2[i+1][j+1]=std::to_string(matriz1[i+1][j+1]);
+		}
+	}
+	if(j!=9 && matriz1[i][j+1]==0 && !visitados[i][j+1]){
+		matriz2[i][j+1]='0';
+		comprobacionCeros(i, j+1);
+	}
+	else{
+		if(j!=9){
+			matriz2[i][j+1]=std::to_string(matriz1[i][j+1]);
+		}
+	}
+	if(i!=0 && j!=9 && matriz1[i-1][j+1]==0 && !visitados[i-1][j+1]){
+		matriz2[i-1][j+1]='0';
+		comprobacionCeros(i-1, j+1);
+	}
+	else{
+		if(i!=0 && j!=9){
+			matriz2[i-1][j+1]=std::to_string(matriz1[i-1][j+1]);
+		}
+	}
+}
 std::string Panel::seleccionarCasilla(int fila, char columna_letra, int socket, std::map<int, std::string> & usuarios){
 	std::string aux;
 	int columna=traduccionFila(columna_letra);
 
 	//comprobamos que la casilla no ha sido ya seleccionada
 	if(matriz2[fila][columna]!="-"){
-		//std::cout<<"Esa casilla ya ha sido seleccionada antes\n";
 		aux="Esa casilla ya ha sido seleccionada antes\n";
 		return aux;
 	}
