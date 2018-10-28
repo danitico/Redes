@@ -99,6 +99,61 @@ TEST(Panel, CompruebaCeros){
       std::cout << std::endl;
    }
 }
+TEST(Panel, ColocarBandera){
+   Panel prueba, prueba1;
+   std::map<int, std::string> usuarios;
+   usuarios[1]="pipo";
+   usuarios[2]="pipo1";
+
+   prueba.setSocket1(1);
+   prueba.setSocket1(2);
+   prueba1.setSocket1(1);
+   prueba1.setSocket1(2);
+
+   prueba.setMatrix1(1, 1, -1);
+   prueba.setMatrix1(4, 9, -1);
+   prueba.setMatrix1(3, 5, -1);
+   prueba.setMatrix1(2, 5, -1);
+   prueba.setMatrix1(1, 2, -1);
+   prueba.setMatrix1(7, 7, -1);
+   prueba.setMatrix1(4, 5, -1);
+   prueba.setMatrix1(4, 0, -1);
+   prueba.setMatrix1(1, 5, -1);
+   prueba.setMatrix1(3, 2, -1);
+
+   EXPECT_EQ(prueba.ponerBandera(1, 'B', 1, usuarios), "");
+   EXPECT_EQ(prueba.ponerBandera(4, 'J', 1, usuarios), "");
+   EXPECT_EQ(prueba.ponerBandera(3, 'F', 1, usuarios), "");
+   EXPECT_EQ(prueba.ponerBandera(2, 'F', 1, usuarios), "");
+   EXPECT_EQ(prueba.ponerBandera(1, 'C', 1, usuarios), "");
+   EXPECT_EQ(prueba.ponerBandera(7, 'H', 1, usuarios), "");
+   EXPECT_EQ(prueba.ponerBandera(4, 'F', 1, usuarios), "");
+   EXPECT_EQ(prueba.ponerBandera(4, 'A', 1, usuarios), "");
+   EXPECT_EQ(prueba.ponerBandera(1, 'F', 1, usuarios), "");
+   EXPECT_EQ(prueba.ponerBandera(3, 'C', 1, usuarios), "+Ok. " + usuarios[1] + " ha ganado.\n");
+
+   prueba1.setMatrix1(1, 1, -1);
+   prueba1.setMatrix1(4, 9, -1);
+   prueba1.setMatrix1(3, 5, -1);
+   prueba1.setMatrix1(2, 5, -1);
+   prueba1.setMatrix1(1, 2, -1);
+   prueba1.setMatrix1(7, 7, -1);
+   prueba1.setMatrix1(4, 5, -1);
+   prueba1.setMatrix1(4, 0, -1);
+   prueba1.setMatrix1(1, 5, -1);
+   prueba1.setMatrix1(3, 2, -1);
+
+   EXPECT_EQ(prueba1.ponerBandera(1, 'B', 2, usuarios), "");
+   EXPECT_EQ(prueba1.ponerBandera(4, 'J', 2, usuarios), "");
+   EXPECT_EQ(prueba1.ponerBandera(3, 'F', 2, usuarios), "");
+   EXPECT_EQ(prueba1.ponerBandera(2, 'F', 2, usuarios), "");
+   EXPECT_EQ(prueba1.ponerBandera(1, 'C', 2, usuarios), "");
+   EXPECT_EQ(prueba1.ponerBandera(7, 'H', 2, usuarios), "");
+   EXPECT_EQ(prueba1.ponerBandera(4, 'F', 2, usuarios), "");
+   EXPECT_EQ(prueba1.ponerBandera(4, 'A', 2, usuarios), "");
+   EXPECT_EQ(prueba1.ponerBandera(1, 'F', 2, usuarios), "");
+   EXPECT_EQ(prueba1.ponerBandera(9, 'C', 2, usuarios), "+Ok. " + usuarios[2] + " ha perdido.\n");
+}
 int main(int argc, char **argv) {
     testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();

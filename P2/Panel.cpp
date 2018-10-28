@@ -172,7 +172,7 @@ bool Panel::comprobarBanderas(int socket){
 }
 std::string Panel::ponerBandera(int fila, char columna_letra, int socket, std::map<int, std::string> & usuarios){//por ejemplo, pos. A 3, jugador A
 	std::string jugador;
-	std::string aux;
+	std::string aux="";
 	int columna=traduccionFila(columna_letra);
 
 	if(getSocket1()==socket){
@@ -206,7 +206,7 @@ std::string Panel::ponerBandera(int fila, char columna_letra, int socket, std::m
 		}
 	}
 
-	if(getbanderasA()==10 && getbanderasB()==10){
+	if(getbanderasA()==10 || getbanderasB()==10){
 		if(comprobarBanderas(socket)){
 			aux="+Ok. " + usuarios[socket] + " ha ganado.\n";
 		}
