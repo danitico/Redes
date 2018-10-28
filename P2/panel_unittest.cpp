@@ -121,16 +121,16 @@ TEST(Panel, diez_banderas){
    prueba.setMatrix1(1, 5, -1);
    prueba.setMatrix1(3, 2, -1);
 
-   EXPECT_EQ(prueba.ponerBandera(1, 'B', 1, usuarios), "");
-   EXPECT_EQ(prueba.ponerBandera(4, 'J', 1, usuarios), "");
-   EXPECT_EQ(prueba.ponerBandera(3, 'F', 1, usuarios), "");
-   EXPECT_EQ(prueba.ponerBandera(2, 'F', 1, usuarios), "");
-   EXPECT_EQ(prueba.ponerBandera(1, 'C', 1, usuarios), "");
-   EXPECT_EQ(prueba.ponerBandera(7, 'H', 1, usuarios), "");
-   EXPECT_EQ(prueba.ponerBandera(4, 'F', 1, usuarios), "");
-   EXPECT_EQ(prueba.ponerBandera(4, 'A', 1, usuarios), "");
-   EXPECT_EQ(prueba.ponerBandera(1, 'F', 1, usuarios), "");
-   EXPECT_EQ(prueba.ponerBandera(3, 'C', 1, usuarios), "+Ok. " + usuarios[1] + " ha ganado.\n");
+   EXPECT_EQ(prueba.ponerBandera(1, (char*)"B", 1, usuarios), "");
+   EXPECT_EQ(prueba.ponerBandera(4, (char*)"J", 1, usuarios), "");
+   EXPECT_EQ(prueba.ponerBandera(3, (char*)"F", 1, usuarios), "");
+   EXPECT_EQ(prueba.ponerBandera(2, (char*)"F", 1, usuarios), "");
+   EXPECT_EQ(prueba.ponerBandera(1, (char*)"C", 1, usuarios), "");
+   EXPECT_EQ(prueba.ponerBandera(7, (char*)"H", 1, usuarios), "");
+   EXPECT_EQ(prueba.ponerBandera(4, (char*)"F", 1, usuarios), "");
+   EXPECT_EQ(prueba.ponerBandera(4, (char*)"A", 1, usuarios), "");
+   EXPECT_EQ(prueba.ponerBandera(1, (char*)"F", 1, usuarios), "");
+   EXPECT_EQ(prueba.ponerBandera(3, (char*)"C", 1, usuarios), "+Ok. " + usuarios[1] + " ha ganado.\n");
 
    prueba1.setMatrix1(1, 1, -1);
    prueba1.setMatrix1(4, 9, -1);
@@ -143,16 +143,16 @@ TEST(Panel, diez_banderas){
    prueba1.setMatrix1(1, 5, -1);
    prueba1.setMatrix1(3, 2, -1);
 
-   EXPECT_EQ(prueba1.ponerBandera(1, 'B', 2, usuarios), "");
-   EXPECT_EQ(prueba1.ponerBandera(4, 'J', 2, usuarios), "");
-   EXPECT_EQ(prueba1.ponerBandera(3, 'F', 2, usuarios), "");
-   EXPECT_EQ(prueba1.ponerBandera(2, 'F', 2, usuarios), "");
-   EXPECT_EQ(prueba1.ponerBandera(1, 'C', 2, usuarios), "");
-   EXPECT_EQ(prueba1.ponerBandera(7, 'H', 2, usuarios), "");
-   EXPECT_EQ(prueba1.ponerBandera(4, 'F', 2, usuarios), "");
-   EXPECT_EQ(prueba1.ponerBandera(4, 'A', 2, usuarios), "");
-   EXPECT_EQ(prueba1.ponerBandera(1, 'F', 2, usuarios), "");
-   EXPECT_EQ(prueba1.ponerBandera(9, 'C', 2, usuarios), "+Ok. " + usuarios[2] + " ha perdido.\n");
+   EXPECT_EQ(prueba1.ponerBandera(1, (char*)"B", 2, usuarios), "");
+   EXPECT_EQ(prueba1.ponerBandera(4, (char*)"J", 2, usuarios), "");
+   EXPECT_EQ(prueba1.ponerBandera(3, (char*)"F", 2, usuarios), "");
+   EXPECT_EQ(prueba1.ponerBandera(2, (char*)"F", 2, usuarios), "");
+   EXPECT_EQ(prueba1.ponerBandera(1, (char*)"C", 2, usuarios), "");
+   EXPECT_EQ(prueba1.ponerBandera(7, (char*)"H", 2, usuarios), "");
+   EXPECT_EQ(prueba1.ponerBandera(4, (char*)"F", 2, usuarios), "");
+   EXPECT_EQ(prueba1.ponerBandera(4, (char*)"A", 2, usuarios), "");
+   EXPECT_EQ(prueba1.ponerBandera(1, (char*)"F", 2, usuarios), "");
+   EXPECT_EQ(prueba1.ponerBandera(9, (char*)"C", 2, usuarios), "+Ok. " + usuarios[2] + " ha perdido.\n");
 }
 TEST(Panel, ver_banderas_matrix){
    Panel prueba, prueba1;
@@ -163,12 +163,12 @@ TEST(Panel, ver_banderas_matrix){
    prueba.setSocket1(1);
    prueba.setSocket2(2);
 
-   prueba.ponerBandera(0, 'A', 1, usuarios);
-   prueba.ponerBandera(0, 'A', 2, usuarios);
-   prueba.ponerBandera(3, 'A', 2, usuarios);
-   prueba.ponerBandera(3, 'A', 1, usuarios);
-   prueba.ponerBandera(1, 'C', 1, usuarios);
-   prueba.ponerBandera(8, 'C', 2, usuarios);
+   prueba.ponerBandera(0, (char*)"A", 1, usuarios);
+   prueba.ponerBandera(0, (char*)"A", 2, usuarios);
+   prueba.ponerBandera(3, (char*)"A", 2, usuarios);
+   prueba.ponerBandera(3, (char*)"A", 1, usuarios);
+   prueba.ponerBandera(1, (char*)"C", 1, usuarios);
+   prueba.ponerBandera(8, (char*)"C", 2, usuarios);
 
    EXPECT_EQ(prueba.getMatrix2()[0][0], "AB");
    EXPECT_EQ(prueba.getMatrix2()[3][0], "AB");
@@ -190,9 +190,9 @@ TEST(Panel, seleccionar_casilla){
    prueba.setMatrix1(2, 5, -1);
 
    prueba.busquedaBombas();
-   EXPECT_EQ(prueba.seleccionarCasilla(1, 'B', 1, usuarios), "Jugador " + usuarios[1] + " ha perdido la partida\n");
+   EXPECT_EQ(prueba.seleccionarCasilla(1, (char*)"B", 1, usuarios), "Jugador " + usuarios[1] + " ha perdido la partida\n");
 
-   prueba.seleccionarCasilla(1, 'C', 1, usuarios);
+   prueba.seleccionarCasilla(1, (char*)"C", 1, usuarios);
    EXPECT_EQ(prueba.getMatrix2()[1][2], "1");
 }
 int main(int argc, char **argv) {

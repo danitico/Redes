@@ -131,8 +131,8 @@ int main(){
                         FD_CLR(arrayClientes[j], &auth);
                         FD_CLR(arrayClientes[j], &playing);
                         FD_CLR(arrayClientes[j], &ask_password);
+                        FD_CLR(arrayClientes[j], &waiting_for_player);
                      }
-                     std::cout << "HOLA" << '\n';
                      close(sd);
                      exit(-1);
                   }
@@ -227,7 +227,6 @@ int main(){
                                     if(strcmp(passwd_to_search.c_str(), contrasena)==0){
                                        FD_SET(i, &auth);
                                        FD_CLR(i, &ask_password);
-                                       // usuarios.erase(i);
                                        bzero(buffer,sizeof(buffer));
                                        strcpy(buffer,"+OK Contrasena Correcta. Log In hecho con éxito\0");
                                        send(i,buffer,strlen(buffer),0);
@@ -253,16 +252,21 @@ int main(){
                         else if(strcmp(buffer, "INICIAR-PARTIDA\n")==0){
                            if(FD_ISSET(i, &auth)){
                               if(partidas.size()>0){
-                                 int id_partida=partidas.size() - 1;
-                                 if(partidas[id_partida].getSocket2()==-1){
-                                    partidas[id_partida].setSocket2(i);
-                                    FD_CLR(partidas[id_partida].getSocket1(), &waiting_for_player);
-                                    FD_SET(partidas[id_partida].getSocket1(), &playing);
+                                 if(partidas.back().getSocket2()==-1){
+                                    int socket1=partidas.back().getSocket1();
+
+                                    partidas.back().setSocket2(i);
+                                    partidas.back().setTurno(socket1);
+
+                                    FD_CLR(socket1, &waiting_for_player);
+                                    FD_SET(socket1, &playing);
                                     FD_SET(i, &playing);
+
                                     bzero(buffer,sizeof(buffer));
                                     strcpy(buffer,"+OK Comienza la partida\0");
+
                                     send(i, buffer, strlen(buffer), 0);
-                                    send(partidas[id_partida].getSocket1() ,buffer,strlen(buffer),0);
+                                    send(socket1 ,buffer,strlen(buffer),0);
                                  }
                                  else{
                                     //crear nuevo Panel
@@ -287,10 +291,6 @@ int main(){
                                  strcpy(buffer,"+OK Waiting for a player\0");
                                  send(i,buffer,strlen(buffer),0);
                               }
-
-                              // bzero(buffer,sizeof(buffer));
-                              // strcpy(buffer,"+OK espera\0");
-                              // send(i,buffer,strlen(buffer),0);
                            }
                            else{
                               bzero(buffer,sizeof(buffer));
@@ -312,6 +312,26 @@ int main(){
                                  row=atoi(aux);
 
                                  int indice_partida=busquedaPartidaDelJugador(partidas, i);
+
+                                 if(partidas[indice_partida].getTurno()==i){
+                                    std::string respuesta;
+                                    if((respuesta=partidas[indice_partida].seleccionarCasilla(row, col, i, usuarios))==""){
+                                       //enviar tablero
+                                    }
+                                    else{
+                                       //enviar que ha ganado o perdido
+                                       send(i, respuesta.c_str(), strlen(respuesta.c_str()), 0);
+                                       FD_CLR(partidas[indice_partida].getSocket1(), &playing);
+                                       FD_CLR(partidas[indice_partida].getSocket2(), &playing);
+
+                                       partidas.erase(partidas.begin() + indice_partida);
+                                    }
+                                 }
+                                 else{
+                                    bzero(buffer,sizeof(buffer));
+                                    strcpy(buffer,"-Err Debe de esperar su turno\0");
+                                    send(i,buffer,strlen(buffer),0);
+                                 }
                               }
                               else{
                                  bzero(buffer,sizeof(buffer));
@@ -328,7 +348,6 @@ int main(){
                         else if(strstr(buffer, "PONER-BANDERA")!=NULL){
                            if(FD_ISSET(i, &auth)){
                               if(FD_ISSET(i, &playing)){
-                                 //a implementar. Por ahora voy a obtener la fila y la columna
                                  int row=0;
                                  char col[2], *aux;
                                  bzero(col,sizeof(col));
@@ -339,11 +358,30 @@ int main(){
                                  row=atoi(aux);
 
                                  int indice_partida=busquedaPartidaDelJugador(partidas, i);
-                                 //poner funciones
+
+                                 if(partidas[indice_partida].getTurno()==i){
+                                    std::string respuesta;
+                                    if((respuesta=partidas[indice_partida].ponerBandera(row, col, i, usuarios))==""){
+                                       //enviar tablero
+                                    }
+                                    else{
+                                       //enviar que ha ganado o perdido
+                                       send(i, respuesta.c_str(), strlen(respuesta.c_str()), 0);
+                                       FD_CLR(partidas[indice_partida].getSocket1(), &playing);
+                                       FD_CLR(partidas[indice_partida].getSocket2(), &playing);
+
+                                       partidas.erase(partidas.begin() + indice_partida);
+                                    }
+                                 }
+                                 else{
+                                    bzero(buffer,sizeof(buffer));
+                                    strcpy(buffer,"-Err Debe de esperar su turno\0");
+                                    send(i,buffer,strlen(buffer),0);
+                                 }
                               }
                               else{
                                  bzero(buffer,sizeof(buffer));
-                                 strcpy(buffer,"-Err Debe de inicia una partida para jugar\0");
+                                 strcpy(buffer,"-Err Debe de iniciar una partida para jugar\0");
                                  send(i,buffer,strlen(buffer),0);
                               }
                            }

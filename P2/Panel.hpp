@@ -53,6 +53,12 @@ class Panel{
 		inline int getbanderasB()const{
 			return _banderasB;
 		}
+		inline int getTurno() const{
+			return _turno;
+		}
+		inline void setTurno(int turno){
+			_turno=turno;
+		}
 		inline std::string mostrarMatrizInicial() const{//muestra la matriz al comienzo del juego, antes de que haya sufrido modificacion alguna
 			std::string aux;
 			for (int i = 0; i < 10; ++i){
@@ -83,7 +89,7 @@ class Panel{
 		void comprobacionCeros(int i, int j);
 		void rellenaMatriz(); //funcion que rellena la matriz de numeros y bombas al principio del juego
 		bool comprobarBanderas(int socket);
-		std::string ponerBandera(int fila, char columna_letra, int socket, std::map<int, std::string> & usuarios);//funcion que marca una casilla por parte de un jugador
-		std::string seleccionarCasilla(int fila, char columna_letra, int socket, std::map<int, std::string> & usuarios);//ejemplo: A 2, 2 (jugador numero 2). un jugador selecciona una casilla para descubrirla
+		std::string ponerBandera(int fila, char * columna_letra, int socket, std::map<int, std::string> & usuarios);//funcion que marca una casilla por parte de un jugador
+		std::string seleccionarCasilla(int fila, char * columna_letra, int socket, std::map<int, std::string> & usuarios);//ejemplo: A 2, 2 (jugador numero 2). un jugador selecciona una casilla para descubrirla
 };
 #endif

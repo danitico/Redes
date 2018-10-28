@@ -170,10 +170,10 @@ bool Panel::comprobarBanderas(int socket){
 		return true;
 	}
 }
-std::string Panel::ponerBandera(int fila, char columna_letra, int socket, std::map<int, std::string> & usuarios){//por ejemplo, pos. A 3, jugador A
+std::string Panel::ponerBandera(int fila, char * columna_letra, int socket, std::map<int, std::string> & usuarios){//por ejemplo, pos. A 3, jugador A
 	std::string jugador;
 	std::string aux="";
-	int columna=traduccionFila(columna_letra);
+	int columna=traduccionFila(columna_letra[0]);
 
 	if(getSocket1()==socket){
 		jugador='A';
@@ -183,10 +183,10 @@ std::string Panel::ponerBandera(int fila, char columna_letra, int socket, std::m
 	}
 
 	//ponemos la bandera
-	if(matriz2[fila][columna]==jugador){
-		aux="Ya habias marcado esa casilla\n";
-		return aux;
-	}
+	// if(matriz2[fila][columna]==jugador){
+	// 	aux="Ya habias marcado esa casilla\n";
+	// 	return aux;
+	// }
 
 	if(matriz2[fila][columna]=="A" && jugador=="B"){
 		matriz2[fila][columna]="AB";
@@ -297,9 +297,9 @@ void Panel::comprobacionCeros(int i, int j){//FUNCION AUXILIAR DE LA CLASE
 		}
 	}
 }
-std::string Panel::seleccionarCasilla(int fila, char columna_letra, int socket, std::map<int, std::string> & usuarios){
+std::string Panel::seleccionarCasilla(int fila, char * columna_letra, int socket, std::map<int, std::string> & usuarios){
 	std::string aux="";
-	int columna=traduccionFila(columna_letra);
+	int columna=traduccionFila(columna_letra[0]);
 
 	//comprobamos que la casilla no ha sido ya seleccionada
 	// if(matriz2[fila][columna]!="-"){
@@ -310,7 +310,6 @@ std::string Panel::seleccionarCasilla(int fila, char columna_letra, int socket, 
 	//Si en la casilla seleccionada hay una bomba
 	if(matriz1[fila][columna]==-1){
 		aux="Jugador " + usuarios[socket] + " ha perdido la partida\n";
-		return aux;
 	}
 	else{
 		//Si en la casilla no hay bomba
@@ -323,4 +322,6 @@ std::string Panel::seleccionarCasilla(int fila, char columna_letra, int socket, 
 			matriz2[fila][columna]=std::to_string(casilla);
 		}
 	}
+
+	return aux;
 }

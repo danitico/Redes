@@ -4,7 +4,7 @@ find_package(GTest REQUIRED)
 include_directories(${GTEST_INCLUDE_DIRS})
 SET(CMAKE_CXX_FLAGS "-g -std=c++11 -lgcov --coverage")
 add_executable(cliente cliente.cpp)
-add_executable(servidor servidor.cpp)
+add_executable(servidor servidor.cpp Panel.cpp)
 
 add_executable(testPanel panel_unittest.cpp Panel.cpp)
 target_link_libraries(testPanel ${GTEST_LIBRARIES} pthread)
