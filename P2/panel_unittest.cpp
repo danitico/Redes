@@ -25,8 +25,13 @@ TEST(Panel, Constructor){
       }
    }
 }
-TEST(Panel, BusquedaBombas){
+TEST(Panel, BusquedaBomba){
    Panel prueba;
+   for(int i=0; i<10; i++){
+      for(int j=0; j<10; j++){
+         prueba.setMatrix1(i, j, 0);
+      }
+   }
    std::vector<std::vector <int> > objetivo(10, std::vector<int>(10, 0));
 
    for(int i=0; i<10; i++){
@@ -81,6 +86,11 @@ TEST(Panel, BusquedaBombas){
 }
 TEST(Panel, CompruebaCeros){
    Panel prueba;
+   for(int i=0; i<10; i++){
+      for(int j=0; j<10; j++){
+         prueba.setMatrix1(i, j, 0);
+      }
+   }
    prueba.setMatrix1(0, 0, -1);
    prueba.setMatrix1(4, 0, -1);
    prueba.setMatrix1(7, 7, -1);
@@ -101,6 +111,12 @@ TEST(Panel, CompruebaCeros){
 }
 TEST(Panel, diez_banderas){
    Panel prueba, prueba1;
+   for(int i=0; i<10; i++){
+      for(int j=0; j<10; j++){
+         prueba.setMatrix1(i, j, 0);
+         prueba1.setMatrix1(i, j, 0);
+      }
+   }
    std::map<int, std::string> usuarios;
    usuarios[1]="pipo";
    usuarios[2]="pipo1";
@@ -156,6 +172,12 @@ TEST(Panel, diez_banderas){
 }
 TEST(Panel, ver_banderas_matrix){
    Panel prueba, prueba1;
+   for(int i=0; i<10; i++){
+      for(int j=0; j<10; j++){
+         prueba.setMatrix1(i, j, 0);
+         prueba1.setMatrix1(i, j, 0);
+      }
+   }
    std::map<int, std::string> usuarios;
    usuarios[1]="pipo";
    usuarios[2]="pipo1";
@@ -177,6 +199,12 @@ TEST(Panel, ver_banderas_matrix){
 }
 TEST(Panel, seleccionar_casilla){
    Panel prueba, prueba1;
+   for(int i=0; i<10; i++){
+      for(int j=0; j<10; j++){
+         prueba.setMatrix1(i, j, 0);
+         prueba1.setMatrix1(i, j, 0);
+      }
+   }
    std::map<int, std::string> usuarios;
    usuarios[1]="pipo";
    usuarios[2]="pipo1";

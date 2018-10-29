@@ -314,7 +314,7 @@ int main(){
                                  int indice_partida=busquedaPartidaDelJugador(partidas, i);
 
                                  if(partidas[indice_partida].getTurno()==i){
-                                    std::string respuesta;
+                                    std::string respuesta, tablero;
                                     if((respuesta=partidas[indice_partida].seleccionarCasilla(row, col, i, usuarios))==""){
                                        if(i==partidas[indice_partida].getSocket1()){
                                           partidas[indice_partida].setTurno(partidas[indice_partida].getSocket2());
@@ -323,7 +323,9 @@ int main(){
                                           partidas[indice_partida].setTurno(partidas[indice_partida].getSocket1());
                                        }
 
-                                       send(i, partidas[indice_partida].mostrarMatriz().c_str(), strlen(partidas[indice_partida].mostrarMatriz().c_str()), 0);
+                                       tablero=partidas[indice_partida].mostrarMatriz();
+                                       send(partidas[indice_partida].getSocket1(), tablero.c_str(), strlen(tablero.c_str()), 0);
+                                       send(partidas[indice_partida].getSocket2(), tablero.c_str(), strlen(tablero.c_str()), 0);
                                        //enviar tablero
                                     }
                                     else{
@@ -368,7 +370,7 @@ int main(){
                                  int indice_partida=busquedaPartidaDelJugador(partidas, i);
 
                                  if(partidas[indice_partida].getTurno()==i){
-                                    std::string respuesta;
+                                    std::string respuesta, tablero;
                                     if((respuesta=partidas[indice_partida].ponerBandera(row, col, i, usuarios))==""){
                                        if(i==partidas[indice_partida].getSocket1()){
                                           partidas[indice_partida].setTurno(partidas[indice_partida].getSocket2());
@@ -377,7 +379,9 @@ int main(){
                                           partidas[indice_partida].setTurno(partidas[indice_partida].getSocket1());
                                        }
 
-                                       send(i, partidas[indice_partida].mostrarMatriz().c_str(), strlen(partidas[indice_partida].mostrarMatriz().c_str()), 0);
+                                       tablero=partidas[indice_partida].mostrarMatriz();
+                                       send(partidas[indice_partida].getSocket1(), tablero.c_str(), strlen(tablero.c_str()), 0);
+                                       send(partidas[indice_partida].getSocket2(), tablero.c_str(), strlen(tablero.c_str()), 0);
                                        //enviar tablero
                                     }
                                     else{

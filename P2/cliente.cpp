@@ -59,12 +59,15 @@ int main(int argc, char **argv){
       send(sd, buffer, sizeof(buffer), 0);
       recv(sd, buffer1, sizeof(buffer1), 0);
 
-      if(strcmp(buffer1, "+OK Waiting for a player\0")==0)
+      if(strcmp(buffer1, "+OK Waiting for a player\0")==0){
+         std::cout << buffer1 << '\n';
+         bzero(buffer1, sizeof(buffer1));
          recv(sd, buffer1, sizeof(buffer1), 0);
-      
+      }
+
       if(strcmp(buffer1, "SALIR\0")==0)
          break;
-      
+
       else{
          std::cout << buffer1 << '\n';
       }

@@ -11,8 +11,10 @@ std::string Panel::mostrarMatriz()const{
 		for (int j = 0; j < 10; ++j){
 			aux+=" "+matriz2[i][j];
 		}
-		aux+=";";
+		aux+="\n";
 	}
+
+	return aux;
 }
 void Panel::rellenaMatriz(){
 	srand(time(NULL));//semilla del generador de numeros aleatorios

@@ -25,6 +25,8 @@ class Panel{
 			_socket1=-1;
 			_socket2=-1;
 			_turno=-1;
+
+			this->rellenaMatriz();
 		}
 		inline std::vector<std::vector<int> > getMatrix1(){
 			return matriz1;
@@ -67,6 +69,8 @@ class Panel{
 				}
 				aux+=";";
 			}
+
+			return aux;
 		}
 		inline std::string mostrarMatrizFinal()const{//funcion que muestra la matriz al descubierto. Util para mostrarla al final de la partida
 			std::string aux;
@@ -76,11 +80,13 @@ class Panel{
 						aux = aux + " " + "*";
 					}
 					else{
-						aux += " " + matriz1[i][j];
+						aux += " " + std::to_string(matriz1[i][j]);
 					}
 				}
-				aux+=";";
+				aux+="\n";
 			}
+
+			return aux;
 		}
 		std::string mostrarMatriz() const;//se muestra la matriz actual a los jugadores.
 		void obtenerBombas(int i, int j, int r);
