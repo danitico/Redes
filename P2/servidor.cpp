@@ -316,6 +316,14 @@ int main(){
                                  if(partidas[indice_partida].getTurno()==i){
                                     std::string respuesta;
                                     if((respuesta=partidas[indice_partida].seleccionarCasilla(row, col, i, usuarios))==""){
+                                       if(i==partidas[indice_partida].getSocket1()){
+                                          partidas[indice_partida].setTurno(partidas[indice_partida].getSocket2());
+                                       }
+                                       else{
+                                          partidas[indice_partida].setTurno(partidas[indice_partida].getSocket1());
+                                       }
+
+                                       send(i, partidas[indice_partida].mostrarMatriz().c_str(), strlen(partidas[indice_partida].mostrarMatriz().c_str()), 0);
                                        //enviar tablero
                                     }
                                     else{
@@ -362,6 +370,14 @@ int main(){
                                  if(partidas[indice_partida].getTurno()==i){
                                     std::string respuesta;
                                     if((respuesta=partidas[indice_partida].ponerBandera(row, col, i, usuarios))==""){
+                                       if(i==partidas[indice_partida].getSocket1()){
+                                          partidas[indice_partida].setTurno(partidas[indice_partida].getSocket2());
+                                       }
+                                       else{
+                                          partidas[indice_partida].setTurno(partidas[indice_partida].getSocket1());
+                                       }
+
+                                       send(i, partidas[indice_partida].mostrarMatriz().c_str(), strlen(partidas[indice_partida].mostrarMatriz().c_str()), 0);
                                        //enviar tablero
                                     }
                                     else{
