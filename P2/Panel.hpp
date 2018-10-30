@@ -6,7 +6,8 @@
 #include <vector>
 #include <map>
 #include "macros.hpp"
-class Panel{
+class Panel
+{
 	private:
 		std::vector<std::vector<int> >matriz1;//con esta matriz trabaja el programa internamente
 		std::vector<std::vector<std::string> > matriz2;//esta matriz se mostrara por pantalla
@@ -17,7 +18,8 @@ class Panel{
 		int _socket2;
 		int _turno;
 	public:
-		inline Panel(){//constructor de la clase
+		inline Panel()//constructor de la clase
+		{
 			matriz1.resize(10, std::vector<int>(10,0));
 			matriz2.resize(10, std::vector<std::string>(10,"-"));
 			visitados.resize(10, std::vector<bool>(10, false));
@@ -30,8 +32,7 @@ class Panel{
 			this->rellenaMatriz();
 		}
 		inline std::vector<std::vector<int> > getMatrix1(){
-			return matriz1;
-		}
+			return matriz1;}
 		inline void setMatrix1(int i, int j, int value){
 			matriz1[i][j]=value;
 		}

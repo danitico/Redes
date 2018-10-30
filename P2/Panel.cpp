@@ -5,12 +5,14 @@
 #include <string>
 #include <stdio.h>
 #include "Panel.hpp"
-std::string Panel::mostrarMatriz()const{
+std::string Panel::mostrarMatriz()const
+{
 	std::string aux;
-	for (int i = 0; i < 10; ++i){
-		for (int j = 0; j < 10; ++j){
+	for (int i = 0; i < 10; ++i)
+	{
+		for (int j = 0; j < 10; ++j)
 			aux+=" "+matriz2[i][j];
-		}
+		
 		aux+="\n";
 	}
 
@@ -104,15 +106,13 @@ void Panel::obtenerBombas(int i, int j, int r=1){
       }
    }
 }
-void Panel::busquedaBombas(){
+void Panel::busquedaBombas()
+{
 	//ahora rellenamos los numeros de las casillas (0 incluido). Si la casilla vale 0, no hay bomba alrededor
-	for(int i=0; i<10; i++){
-		for(int j=0; j<10; j++){
-			if(matriz1[i][j]!=-1){
+	for(int i=0; i<10; i++)
+		for(int j=0; j<10; j++)
+			if(matriz1[i][j]!=-1)
 				obtenerBombas(i, j);
-			}
-		}
-	}
 }
 int Panel::traduccionFila(char fila){
 	int i;
@@ -151,22 +151,26 @@ int Panel::traduccionFila(char fila){
 	return i;
 }
 bool Panel::comprobarBanderas(int socket){
-	if(getSocket1()==socket){
-		for(int i=0;i<10;i++){
-			for(int k=0;k<10;k++){
-				if((matriz2[i][k].compare("A")==0 || matriz2[i][k].compare("AB")==0) && matriz1[i][k]!=-1){//para comparar string y que no de error al compilar
+	if(getSocket1()==socket)
+	{
+		for(int i=0;i<10;i++)
+		{
+			for(int k=0;k<10;k++)
+			{
+				if((matriz2[i][k].compare("A")==0 || matriz2[i][k].compare("AB")==0) && matriz1[i][k]!=-1)//para comparar string y que no de error al compilar
 					return false;
-				}
 			}
 		}
 		return true;
 	}
-	else{
-		for(int i=0;i<10;i++){
-			for(int k=0;k<10;k++){
-				if((matriz2[i][k].compare("B")==0 || matriz2[i][k].compare("AB")==0) && (matriz1[i][k]!=-1)){
+	else
+	{
+		for(int i=0;i<10;i++)
+		{
+			for(int k=0;k<10;k++)
+			{
+				if((matriz2[i][k].compare("B")==0 || matriz2[i][k].compare("AB")==0) && (matriz1[i][k]!=-1))
 					return false;
-				}
 			}
 		}
 		return true;
