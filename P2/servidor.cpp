@@ -13,7 +13,9 @@
 #include <vector>
 #include <fstream>
 #include "Panel.hpp"
+#include "macros.hpp"
 #define MAX_CLIENTS 30
+
 int busquedaPartidaDelJugador(std::vector<Panel> partidas, int socket);
 void salirCliente(int socket, fd_set * readfds, fd_set * ask_password, fd_set * auth, fd_set * waiting_for_player, fd_set * playing, int * numClientes, int arrayClientes[], std::map<int, std::string> & usuarios);
 int main(){
@@ -40,7 +42,7 @@ int main(){
 
   	sd = socket (AF_INET, SOCK_STREAM, 0);
 	if(sd == -1){
-      perror("No se puede abrir el socket cliente\n");
+      std::cout << BIRED << "No se puede abrir el socket cliente" << RESET << std::endl;
       exit (1);
 	}
 
@@ -58,7 +60,7 @@ int main(){
    sockname.sin_addr.s_addr = INADDR_ANY;
 
 	if (bind (sd, (struct sockaddr *) &sockname, sizeof (sockname)) == -1){
-		perror("Error en la operación bind");
+		std::cout << BIRED << "Error en la operación bind" << RESET << std::endl;
 		exit(1);
 	}
    	/*---------------------------------------------------------------------
@@ -70,7 +72,7 @@ int main(){
 
 
 		if(listen(sd,1) == -1){
-			perror("Error en la operación de listen");
+			std::cout << BIRED << "Error en la operación de listen" << RESET << std::endl;
 			exit(1);
 		}
 
@@ -98,7 +100,7 @@ int main(){
             if(FD_ISSET(i, &auxfds)){
                if(i==sd){
                   if((new_sd = accept(sd, (struct sockaddr *)&from, &from_len)) == -1){
-                     perror("Error aceptando peticiones");
+                     std::cout << BIRED << "Error aceptando peticiones" << RESET << std::endl;
                   }
                   else{
                      if(numClientes < MAX_CLIENTS){
@@ -420,7 +422,7 @@ int main(){
                   }
                   //Si el cliente introdujo ctrl+c
                   if(recibidos==0){
-                     printf("El socket %d, ha introducido ctrl+c\n", i);
+                     std::cout << BIRED << "El socket %d, ha introducido ctrl+c" << RESET << std::endl ;
                      //Eliminar ese socket
                      salirCliente(i, &readfds, &ask_password, &auth, &waiting_for_player, &playing, &numClientes, arrayClientes, usuarios);
                   }

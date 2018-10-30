@@ -5,6 +5,7 @@
 #include <ctime>
 #include <vector>
 #include <map>
+#include "macros.hpp"
 class Panel{
 	private:
 		std::vector<std::vector<int> >matriz1;//con esta matriz trabaja el programa internamente

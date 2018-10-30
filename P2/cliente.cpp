@@ -9,6 +9,7 @@
 #include <cstring>
 #include <iostream>
 #include <cstdio>
+#include "macros.hpp"
 // void partida(int const & sd);
 int main(int argc, char **argv){
    int sd;
@@ -20,8 +21,9 @@ int main(int argc, char **argv){
    socklen_t len_sockname;
 
    sd = socket (AF_INET, SOCK_STREAM, 0);
-   if (sd == -1){
-      perror("No se puede abrir el socket cliente\n");
+   if (sd == -1)
+   {
+      std::cout << BIRED << "No se puede abrir el socket cliente" << RESET << std::endl;
       exit (1);
    }
 
@@ -31,8 +33,9 @@ int main(int argc, char **argv){
 
    len_sockname = sizeof(sockname);
 
-	if (connect(sd, (struct sockaddr *)&sockname, len_sockname) == -1){
-		perror ("Error de conexión");
+	if (connect(sd, (struct sockaddr *)&sockname, len_sockname) == -1)
+	{
+		std::cout << BIRED << "Error de conexión" << RESET << std::endl;
 		exit(1);
 	}
 
@@ -41,11 +44,11 @@ int main(int argc, char **argv){
    recv(sd, buffer, 250, 0);
 
    if(strcmp("Demasiados clientes conectados\0", buffer)==0){
-      std::cout << buffer << std::endl;
+      std::cout << BIRED << buffer << RESET << std::endl;
       return -1;
    }
    else{
-      std::cout << buffer << "\n";//mensaje conexión correcta
+      std::cout << BIGREEN << buffer << RESET << "\n";//mensaje conexión correcta
    }
 
    bzero(buffer,sizeof(buffer));
