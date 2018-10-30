@@ -18,7 +18,8 @@
 
 int busquedaPartidaDelJugador(std::vector<Panel> partidas, int socket);
 void salirCliente(int socket, fd_set * readfds, fd_set * ask_password, fd_set * auth, fd_set * waiting_for_player, fd_set * playing, int * numClientes, int arrayClientes[], std::map<int, std::string> & usuarios);
-int main(){
+int main()
+{
 	/*----------------------------------------------------
 		Descriptor del socket y buffer de datos
 	-----------------------------------------------------*/
@@ -41,7 +42,8 @@ int main(){
    int on, ret;
 
   	sd = socket (AF_INET, SOCK_STREAM, 0);
-	if(sd == -1){
+	if(sd == -1)
+	{
       std::cout << BIRED << "No se puede abrir el socket cliente" << RESET << std::endl;
       exit (1);
 	}
@@ -59,7 +61,8 @@ int main(){
    sockname.sin_port = htons(2050);
    sockname.sin_addr.s_addr = INADDR_ANY;
 
-	if (bind (sd, (struct sockaddr *) &sockname, sizeof (sockname)) == -1){
+	if (bind (sd, (struct sockaddr *) &sockname, sizeof (sockname)) == -1)
+	{
 		std::cout << BIRED << "Error en la operación bind" << RESET << std::endl;
 		exit(1);
 	}
@@ -71,7 +74,8 @@ int main(){
 		from_len = sizeof(from);
 
 
-		if(listen(sd,1) == -1){
+		if(listen(sd,1) == -1)
+		{
 			std::cout << BIRED << "Error en la operación de listen" << RESET << std::endl;
 			exit(1);
 		}
@@ -90,29 +94,36 @@ int main(){
 	/*-----------------------------------------------------------------------
 		El servidor acepta una petición
 	------------------------------------------------------------------------ */
-   while(1){
+   while(1)
+   {
       //Esperamos recibir mensajes de los clientes (nuevas conexiones o mensajes de los clientes ya conectados)
       auxfds=readfds;
       salida=select(FD_SETSIZE,&auxfds,NULL,NULL,NULL);
-      if(salida > 0){
-         for(i=0; i<FD_SETSIZE; i++){
+      if(salida > 0)
+      {
+         for(i=0; i<FD_SETSIZE; i++)
+         {
            //Buscamos el socket por el que se ha establecido la comunicación
-            if(FD_ISSET(i, &auxfds)){
-               if(i==sd){
-                  if((new_sd = accept(sd, (struct sockaddr *)&from, &from_len)) == -1){
+            if(FD_ISSET(i, &auxfds))
+            {
+               if(i==sd)
+               {
+                  if((new_sd = accept(sd, (struct sockaddr *)&from, &from_len)) == -1)
                      std::cout << BIRED << "Error aceptando peticiones" << RESET << std::endl;
-                  }
-                  else{
-                     if(numClientes < MAX_CLIENTS){
+                  else
+                  {
+                     if(numClientes < MAX_CLIENTS)
+                     {
                         arrayClientes[numClientes] = new_sd;
                         numClientes++;
                         bzero(buffer,sizeof(buffer));
                         // std::cout << new_sd << '\n';
                         FD_SET(new_sd,&readfds);
-                        strcpy(buffer, "Bienvenidos\0");
+                        strcpy(buffer, "Bienvenido\0");
                         send(new_sd,buffer,strlen(buffer),0);
                      }
-                     else{
+                     else
+                     {
                         bzero(buffer,sizeof(buffer));
                         strcpy(buffer,"Demasiados clientes conectados\0");
                         send(new_sd,buffer,strlen(buffer),0);
@@ -120,13 +131,16 @@ int main(){
                      }
                   }
                }
-               else if (i == 0){
+               else if (i == 0)
+               {
                   //Se ha introducido información de teclado
                   bzero(buffer, sizeof(buffer));
                   fgets(buffer, sizeof(buffer),stdin);
                   //Controlar si se ha introducido "SALIR", cerrando todos los sockets y finalmente saliendo del servidor. (implementar)
-                  if(strcmp(buffer,"SALIR\n") == 0){
-                     for(j=0; j<numClientes; j++){
+                  if(strcmp(buffer,"SALIR\n") == 0)
+                  {
+                     for(j=0; j<numClientes; j++)
+                     {
                         send(arrayClientes[j], "SALIR\0", strlen("SALIR\0"),0);
                         close(arrayClientes[j]);
                         FD_CLR(arrayClientes[j],&readfds);
@@ -139,15 +153,18 @@ int main(){
                      exit(-1);
                   }
                }
-               else{
+               else
+               {
                   bzero(buffer,sizeof(buffer));
                   recibidos = recv(i,buffer,sizeof(buffer),0);
-                  if(recibidos>0){
-                     if(strcmp(buffer,"SALIR\n") == 0){
+                  if(recibidos>0)
+                  {
+                     if(strcmp(buffer,"SALIR\n") == 0)
                         salirCliente(i,&readfds,&ask_password, &auth, &waiting_for_player, &playing, &numClientes, arrayClientes, usuarios);
-                     }
-                     else{
-                        if(strstr(buffer, "REGISTRO")!=NULL){
+                     else
+                     {
+                        if(strstr(buffer, "REGISTRO")!=NULL)
+                        {
                            bool anadir=true;
                            char *dummie, *dummie1;
                            char user[20], passwd[20];
@@ -163,9 +180,11 @@ int main(){
                            std::string user_to_search;
                            file.open("USUARIOS.txt", std::fstream::in);
 
-                           while(std::getline(file,search)){
+                           while(std::getline(file,search))
+                           {
                               user_to_search=search.substr(0, strlen(user));
-                              if(strcmp(user_to_search.c_str(), user)==0){
+                              if(strcmp(user_to_search.c_str(), user)==0)
+                              {
                                  anadir=false;
                                  bzero(buffer,sizeof(buffer));
                                  strcpy(buffer,"-Err Ya existe ese usuario\0");
@@ -175,7 +194,8 @@ int main(){
                            }
                            file.close();
                            file.open("USUARIOS.txt", std::fstream::app);
-                           if(anadir){
+                           if(anadir)
+                           {
                               file << user << " " << passwd;
                               bzero(buffer,sizeof(buffer));
                               strcpy(buffer,"+Ok Usuario Registrado\0");
@@ -422,7 +442,7 @@ int main(){
                   }
                   //Si el cliente introdujo ctrl+c
                   if(recibidos==0){
-                     std::cout << BIRED << "El socket %d, ha introducido ctrl+c" << RESET << std::endl ;
+                     std::cout << BIRED << "El socket "<<i<<", ha introducido ctrl+c" << RESET << std::endl ;
                      //Eliminar ese socket
                      salirCliente(i, &readfds, &ask_password, &auth, &waiting_for_player, &playing, &numClientes, arrayClientes, usuarios);
                   }

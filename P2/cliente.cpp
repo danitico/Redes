@@ -49,7 +49,7 @@ int main(int argc, char **argv)
       std::cout << BIRED << buffer << RESET << std::endl;
       return -1;
    }
-   else std::cout << BIGREEN << buffer << RESET << "\n";//mensaje conexión correcta
+   else std::cout << BIYELLOW << buffer << RESET << "\n";//mensaje conexión correcta
    
 
    bzero(buffer,sizeof(buffer));
@@ -74,7 +74,18 @@ int main(int argc, char **argv)
       if(strcmp(buffer1, "SALIR\0")==0)
          break;
 
-      else std::cout << buffer1 << '\n';
+      //else std::cout << BIRED << buffer1 << RESET << '\n';
+      else
+      {
+      	if(strstr(buffer1,"-Err")!=NULL) 
+      		std::cout << BIRED << buffer1 << RESET << std::endl;
+      	else
+      	{ 
+      		if(strstr(buffer1,"+OK")!=NULL) 
+      			std::cout << BIGREEN << buffer1 << RESET << std::endl;
+      		else std::cout << buffer1 << std::endl;
+      	}
+      }
    }
 
 }
