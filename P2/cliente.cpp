@@ -11,7 +11,8 @@
 #include <cstdio>
 #include "macros.hpp"
 // void partida(int const & sd);
-int main(int argc, char **argv){
+int main(int argc, char **argv)
+{
    int sd;
    struct sockaddr_in sockname;
    char buffer[250];
@@ -40,21 +41,22 @@ int main(int argc, char **argv){
 	}
 
    int opcion;
-   std::string cadena, usuario, passwd, registro, bienvenida;
+   std::string cadena, usuario, passwd, registro;
    recv(sd, buffer, 250, 0);
 
-   if(strcmp("Demasiados clientes conectados\0", buffer)==0){
+   if(strcmp("Demasiados clientes conectados\0", buffer)==0)
+   {
       std::cout << BIRED << buffer << RESET << std::endl;
       return -1;
    }
-   else{
-      std::cout << BIGREEN << buffer << RESET << "\n";//mensaje conexión correcta
-   }
+   else std::cout << BIGREEN << buffer << RESET << "\n";//mensaje conexión correcta
+   
 
    bzero(buffer,sizeof(buffer));
    bzero(buffer1, sizeof(buffer1));
 
-   while(1){
+   while(1)
+   {
       bzero(buffer,sizeof(buffer));
       bzero(buffer1, sizeof(buffer1));
       fgets(buffer,sizeof(buffer),stdin);
@@ -62,8 +64,9 @@ int main(int argc, char **argv){
       send(sd, buffer, sizeof(buffer), 0);
       recv(sd, buffer1, sizeof(buffer1), 0);
 
-      if(strcmp(buffer1, "+OK Waiting for a player\0")==0){
-         std::cout << buffer1 << '\n';
+      if(strcmp(buffer1, "+OK Waiting for a player\0")==0)
+      {
+         std::cout << BIBLUE << buffer1 << RESET << '\n';
          bzero(buffer1, sizeof(buffer1));
          recv(sd, buffer1, sizeof(buffer1), 0);
       }
@@ -71,9 +74,7 @@ int main(int argc, char **argv){
       if(strcmp(buffer1, "SALIR\0")==0)
          break;
 
-      else{
-         std::cout << buffer1 << '\n';
-      }
+      else std::cout << buffer1 << '\n';
    }
 
 }
