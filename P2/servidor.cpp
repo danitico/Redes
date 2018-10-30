@@ -384,10 +384,12 @@ int main()
                                  char col[2], *aux;
                                  bzero(col,sizeof(col));
 
-                                 strncpy(col, buffer+10, 1);
+                                 strncpy(col, buffer+14, 1);
                                  aux=strstr(buffer, ",");
                                  strncpy(aux, aux+1, strlen(aux)-1);
                                  row=atoi(aux);
+                                 std::cout << "row: " << row << '\n';
+                                 std::cout << "col" << col[0] << '\n';
 
                                  int indice_partida=busquedaPartidaDelJugador(partidas, i);
 
