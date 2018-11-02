@@ -228,7 +228,7 @@ int main()
                            }
                            if(!ask_for_password){
                               bzero(buffer,sizeof(buffer));
-                              strcpy(buffer,"+Err El usuario no existe\0");
+                              strcpy(buffer,"-Err El usuario no existe\0");
                               send(i,buffer,strlen(buffer),0);
                               file.close();
                            }
@@ -287,9 +287,6 @@ int main()
                                     bzero(buffer,sizeof(buffer));
                                     strcpy(buffer,"+OK Comienza la partida.\0");
                                     send(i, buffer, strlen(buffer), 0);
-
-                                    bzero(buffer,sizeof(buffer));
-                                    strcpy(buffer,"+OK Comienza la partida. Es tu turno\0");
                                     send(socket1 ,buffer,strlen(buffer),0);
                                  }
                                  else{
@@ -342,15 +339,9 @@ int main()
                                     if((respuesta=partidas[indice_partida].seleccionarCasilla(row, col, i, usuarios))==""){
                                        if(i==partidas[indice_partida].getSocket1()){
                                           partidas[indice_partida].setTurno(partidas[indice_partida].getSocket2());
-                                          bzero(buffer,sizeof(buffer));
-                                          strcpy(buffer,"+OK Es tu turno\0");
-                                          send(partidas[indice_partida].getSocket2() ,buffer,strlen(buffer),0);
                                        }
                                        else{
                                           partidas[indice_partida].setTurno(partidas[indice_partida].getSocket1());
-                                          bzero(buffer,sizeof(buffer));
-                                          strcpy(buffer,"+OK Es tu turno\0");
-                                          send(partidas[indice_partida].getSocket1() ,buffer,strlen(buffer),0);
                                        }
 
                                        tablero=partidas[indice_partida].mostrarMatriz();
@@ -406,15 +397,9 @@ int main()
                                     if((respuesta=partidas[indice_partida].ponerBandera(row, col, i, usuarios))==""){
                                        if(i==partidas[indice_partida].getSocket1()){
                                           partidas[indice_partida].setTurno(partidas[indice_partida].getSocket2());
-                                          bzero(buffer,sizeof(buffer));
-                                          strcpy(buffer,"+OK Es tu turno\0");
-                                          send(partidas[indice_partida].getSocket2() ,buffer,strlen(buffer),0);
                                        }
                                        else{
                                           partidas[indice_partida].setTurno(partidas[indice_partida].getSocket1());
-                                          bzero(buffer,sizeof(buffer));
-                                          strcpy(buffer,"+OK Es tu turno\0");
-                                          send(partidas[indice_partida].getSocket2() ,buffer,strlen(buffer),0);
                                        }
 
                                        tablero=partidas[indice_partida].mostrarMatriz();
